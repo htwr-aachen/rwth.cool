@@ -4,17 +4,41 @@
 # description = "A short description"
 
 [redirects.mensa]
-url = "https://www.studierendenwerk-aachen.de/en/eating-drinking/mensa-academica-2.html"
+url = "https://www.studierendenwerk-aachen.de/de/Gastronomie/mensa-academica-wochenplan.html"
 description = "Check today's menu at Mensa Academica"
 
 [redirects.mail]
 url = "https://mail.rwth-aachen.de"
 description = "Access your RWTH email inbox"
 
-[redirects.campus]
-url = "https://campus.rwth-aachen.de"
-description = "Manage your studies and exams"
+[redirects.online]
+url = "https://online.rwth-aachen.de"
+description = "Visit RWTHonline"
 
 [redirects.moodle]
 url = "https://moodle.rwth-aachen.de"
 description = "Access your course materials" 
+
+[redirects.notenstreicher]
+url = "https://notenstreicher.laurenzfg.com/"
+description = "Informatik Abschluss Notenstreicher" 
+
+[redirects.wo]
+url = "https://www.rwth-aachen.de/go/id/cxcq"
+description = "RWTH Gebäudesuche" 
+
+[redirects.offline]
+url = "https://rwthoffline.de/"
+description = "RWTHoffline (more usable course overview)" 
+
+[redirects.supra]
+url = "https://supra.informatik.rwth-aachen.de"
+description = "CS seminar and practical registration" 
+
+[redirects.sc]
+url = "https://sc.informatik.rwth-aachen.de"
+description = "Studiencenter Informatik" 
+
+[redirects.wlan]
+url = "https://app.rwth-aachen.de/eduroam"
+description = "Manage eduroam devices" 
