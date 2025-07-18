@@ -1,0 +1,8 @@
+# Example redirects configuration
+# Format: subdomain = "target_url"
+
+[redirects]
+mensa = "https://www.studierendenwerk-aachen.de/en/eating-drinking/mensa-academica-2.html"
+mail = "https://mail.rwth-aachen.de"
+campus = "https://campus.rwth-aachen.de"
+moodle = "https://moodle.rwth-aachen.de" 
