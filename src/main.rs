@@ -1,9 +1,11 @@
 use axum::{
     extract::{Host, Path},
-    response::Redirect,
+    http::{header::CONTENT_TYPE, StatusCode},
+    response::{IntoResponse, Redirect},
     routing::get,
     Router,
 };
+use askama::Template;
 use serde::Deserialize;
 use std::{collections::HashMap, net::SocketAddr, sync::Arc};
 use tower_http::trace::TraceLayer;
@@ -12,6 +14,47 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 #[derive(Debug, Deserialize)]
 struct Config {
     redirects: HashMap<String, String>,
+}
+
+#[derive(Template)]
+#[template(path = "index.html")]
+struct IndexTemplate<'a> {
+    redirects: &'a HashMap<String, String>,
+}
+
+// Custom response type to handle both redirects and template rendering
+enum AppResponse {
+    Redirect(Redirect),
+    Template(IndexTemplate<'static>),
+    NotFound(String),
+}
+
+impl IntoResponse for AppResponse {
+    fn into_response(self) -> axum::response::Response {
+        match self {
+            AppResponse::Redirect(redirect) => redirect.into_response(),
+            AppResponse::Template(template) => match template.render() {
+                Ok(html) => (
+                    StatusCode::OK,
+                    [(CONTENT_TYPE, "text/html; charset=utf-8")],
+                    html,
+                )
+                    .into_response(),
+                Err(err) => (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    [(CONTENT_TYPE, "text/plain; charset=utf-8")],
+                    format!("Template error: {}", err),
+                )
+                    .into_response(),
+            },
+            AppResponse::NotFound(msg) => (
+                StatusCode::NOT_FOUND,
+                [(CONTENT_TYPE, "text/plain; charset=utf-8")],
+                msg,
+            )
+                .into_response(),
+        }
+    }
 }
 
 // Helper function to strip port from host
@@ -56,7 +99,7 @@ async fn handle_redirect(
     Host(host): Host,
     path: Option<Path<String>>,
     redirects: axum::extract::State<Arc<HashMap<String, String>>>,
-) -> Result<Redirect, String> {
+) -> impl IntoResponse {
     let host = strip_port(&host);
     tracing::debug!("Processing request for host: {}", host);
 
@@ -65,7 +108,7 @@ async fn handle_redirect(
         tracing::debug!("Found subdomain: {}", subdomain);
         if let Some(target) = redirects.get(subdomain) {
             tracing::info!("Redirecting {} to {}", host, target);
-            return Ok(Redirect::permanent(target));
+            return AppResponse::Redirect(Redirect::permanent(target));
         }
     }
 
@@ -77,20 +120,22 @@ async fn handle_redirect(
 
         if let Some(target) = redirects.get(redirect_key) {
             tracing::info!("Redirecting /{} to {}", redirect_key, target);
-            return Ok(Redirect::permanent(target));
+            return AppResponse::Redirect(Redirect::permanent(target));
         }
     }
 
     // If no redirect found and we're on the main domain, show the list
     if host == "rwth.cool" {
-        let mut output = String::from("Available redirects:\n\n");
-        for (subdomain, target) in redirects.iter() {
-            output.push_str(&format!(
-                "- {subdomain}.rwth.cool or rwth.cool/{subdomain} → {target}\n"
-            ));
-        }
-        return Err(output);
+        // Convert the HashMap to a static reference - this is safe because redirects lives for the entire program
+        let redirects_static = unsafe {
+            std::mem::transmute::<&HashMap<String, String>, &'static HashMap<String, String>>(
+                &redirects,
+            )
+        };
+        AppResponse::Template(IndexTemplate {
+            redirects: redirects_static,
+        })
+    } else {
+        AppResponse::NotFound("Redirect not found".to_string())
     }
-
-    Err("Redirect not found".to_string())
 }

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <header>
+        <h1>RWTH.cool Redirects</h1>
+        <p class="subtitle">Quick access to RWTH Aachen University resources</p>
+    </header>
+    
+    <main>
+        <div class="redirects-grid">
+            {% for (key, target) in redirects %}
+            <div class="redirect-card">
+                <h2>{{ key }}</h2>
+                <div class="urls">
+                    <p><strong>Via subdomain:</strong> <a href="https://{{ key }}.rwth.cool">{{ key }}.rwth.cool</a></p>
+                    <p><strong>Via path:</strong> <a href="https://rwth.cool/{{ key }}">rwth.cool/{{ key }}</a></p>
+                </div>
+                <p class="target">Redirects to: <a href="{{ target }}" target="_blank">{{ target }}</a></p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer>
+        <p>Made with ❤️ for RWTH Aachen University</p>
+        <p><a href="https://github.com/your-username/rwth.cool" target="_blank">View on GitHub</a></p>
+    </footer>
+</div>
+{% endblock %} 
