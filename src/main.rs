@@ -12,14 +12,20 @@ use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(Debug, Deserialize)]
+struct RedirectEntry {
+    url: String,
+    description: String,
+}
+
+#[derive(Debug, Deserialize)]
 struct Config {
-    redirects: HashMap<String, String>,
+    redirects: HashMap<String, RedirectEntry>,
 }
 
 #[derive(Template)]
 #[template(path = "index.html")]
 struct IndexTemplate<'a> {
-    redirects: &'a HashMap<String, String>,
+    redirects: &'a HashMap<String, RedirectEntry>,
 }
 
 // Custom response type to handle both redirects and template rendering
@@ -98,7 +104,7 @@ async fn main() {
 async fn handle_redirect(
     Host(host): Host,
     path: Option<Path<String>>,
-    redirects: axum::extract::State<Arc<HashMap<String, String>>>,
+    redirects: axum::extract::State<Arc<HashMap<String, RedirectEntry>>>,
 ) -> impl IntoResponse {
     let host = strip_port(&host);
     tracing::debug!("Processing request for host: {}", host);
@@ -107,8 +113,8 @@ async fn handle_redirect(
     if let Some(subdomain) = host.strip_suffix(".rwth.cool") {
         tracing::debug!("Found subdomain: {}", subdomain);
         if let Some(target) = redirects.get(subdomain) {
-            tracing::info!("Redirecting {} to {}", host, target);
-            return AppResponse::Redirect(Redirect::permanent(target));
+            tracing::info!("Redirecting {} to {}", host, target.url);
+            return AppResponse::Redirect(Redirect::permanent(&target.url));
         }
     }
 
@@ -119,8 +125,8 @@ async fn handle_redirect(
         tracing::debug!("Checking path redirect for: {}", redirect_key);
 
         if let Some(target) = redirects.get(redirect_key) {
-            tracing::info!("Redirecting /{} to {}", redirect_key, target);
-            return AppResponse::Redirect(Redirect::permanent(target));
+            tracing::info!("Redirecting /{} to {}", redirect_key, target.url);
+            return AppResponse::Redirect(Redirect::permanent(&target.url));
         }
     }
 
@@ -128,7 +134,7 @@ async fn handle_redirect(
     if host == "rwth.cool" {
         // Convert the HashMap to a static reference - this is safe because redirects lives for the entire program
         let redirects_static = unsafe {
-            std::mem::transmute::<&HashMap<String, String>, &'static HashMap<String, String>>(
+            std::mem::transmute::<&HashMap<String, RedirectEntry>, &'static HashMap<String, RedirectEntry>>(
                 &redirects,
             )
         };
