@@ -9,7 +9,7 @@
     <main>
         <div class="redirects-grid">
             {% for (key, redirect) in redirects %}
-            <a href="https://{{ key }}.rwth.cool" class="redirect-card">
+            <a href="{{ redirect.url }}" class="redirect-card">
                 <h2>{{ key }}</h2>
                 <div class="redirect-url">{{ key }}.rwth.cool</div>
                 <div class="redirect-description">{{ redirect.description }}</div>
