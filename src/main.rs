@@ -1,6 +1,6 @@
 use axum::{
-    extract::{Host, Path},
-    http::{header::CONTENT_TYPE, StatusCode},
+    extract::{Path, State},
+    http::{header::CONTENT_TYPE, StatusCode, HeaderMap},
     response::{IntoResponse, Redirect},
     routing::get,
     Router,
@@ -87,7 +87,7 @@ async fn main() {
     // Create the router
     let app = Router::new()
         .route("/", get(handle_redirect))
-        .route("/*path", get(handle_redirect))
+        .route("/{*path}", get(handle_redirect))
         .layer(TraceLayer::new_for_http())
         .with_state(redirects.clone());
 
@@ -101,12 +101,17 @@ async fn main() {
 }
 
 // Combined handler for both root and path-based requests
+#[axum::debug_handler]
 async fn handle_redirect(
-    Host(host): Host,
+    State(redirects): State<Arc<HashMap<String, RedirectEntry>>>,
     path: Option<Path<String>>,
-    redirects: axum::extract::State<Arc<HashMap<String, RedirectEntry>>>,
+    headers: HeaderMap,
 ) -> impl IntoResponse {
-    let host = strip_port(&host);
+    let host = headers
+        .get("host")
+        .and_then(|h| h.to_str().ok())
+        .unwrap_or("");
+    let host = strip_port(host);
     tracing::debug!("Processing request for host: {}", host);
 
     // First try subdomain redirect

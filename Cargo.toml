@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axum = { version = "0.7", features = ["http2"] }
+axum = { version = "0.8", features = ["http2", "macros"] }
 tokio = { version = "1.0", features = ["full"] }
 tower-http = { version = "0.6", features = ["trace"] }
 toml = "0.9"
@@ -14,5 +14,6 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 hyper = { version = "1.0", features = ["full"] }
 hyper-util = { version = "0.1", features = ["tokio"] }
 askama = "0.12"
-askama_axum = "0.3"
+askama_axum = "0.4"
 http = "1.0"
+headers = "0.4"
