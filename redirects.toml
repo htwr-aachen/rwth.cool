@@ -1,4 +1,3 @@
-# Example redirects configuration
 # Format: 
 # [redirects.subdomain]
 # url = "target_url"

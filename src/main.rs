@@ -1,11 +1,11 @@
+use askama::Template;
 use axum::{
     extract::{Path, State},
-    http::{header::CONTENT_TYPE, StatusCode, HeaderMap},
+    http::{header::CONTENT_TYPE, HeaderMap, StatusCode},
     response::{IntoResponse, Redirect},
     routing::get,
     Router,
 };
-use askama::Template;
 use serde::Deserialize;
 use std::{collections::HashMap, net::SocketAddr, sync::Arc};
 use tower_http::trace::TraceLayer;
@@ -49,7 +49,7 @@ impl IntoResponse for AppResponse {
                 Err(err) => (
                     StatusCode::INTERNAL_SERVER_ERROR,
                     [(CONTENT_TYPE, "text/plain; charset=utf-8")],
-                    format!("Template error: {}", err),
+                    format!("Template error: {err}"),
                 )
                     .into_response(),
             },
@@ -139,9 +139,10 @@ async fn handle_redirect(
     if host == "rwth.cool" {
         // Convert the HashMap to a static reference - this is safe because redirects lives for the entire program
         let redirects_static = unsafe {
-            std::mem::transmute::<&HashMap<String, RedirectEntry>, &'static HashMap<String, RedirectEntry>>(
-                &redirects,
-            )
+            std::mem::transmute::<
+                &HashMap<String, RedirectEntry>,
+                &'static HashMap<String, RedirectEntry>,
+            >(&redirects)
         };
         AppResponse::Template(IndexTemplate {
             redirects: redirects_static,
