@@ -1,5 +1,5 @@
 
-
+- [ ] deploy pipeline
 - [ ] redirect aliases
 - [ ] categories
 - [ ] sort `redirects.toml`
