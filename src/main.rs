@@ -11,6 +11,8 @@ use std::{collections::HashMap, net::SocketAddr, sync::Arc};
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
+const DOMAIN: &str = "rwth.cool";
+
 #[derive(Debug, Deserialize)]
 struct RedirectEntry {
     url: String,
@@ -115,7 +117,7 @@ async fn handle_redirect(
     tracing::debug!("Processing request for host: {}", host);
 
     // First try subdomain redirect
-    if let Some(subdomain) = host.strip_suffix(".rwth.cool") {
+    if let Some(subdomain) = host.strip_suffix(&format!(".{DOMAIN}")) {
         tracing::debug!("Found subdomain: {}", subdomain);
         if let Some(target) = redirects.get(subdomain) {
             tracing::info!("Redirecting {} to {}", host, target.url);
@@ -124,7 +126,7 @@ async fn handle_redirect(
     }
 
     // If no subdomain match, try path-based redirect
-    if let Some(Path(path)) = path {
+    if let Some(Path(path)) = &path {
         let path = path.trim_start_matches('/');
         let redirect_key = path.split('/').next().unwrap_or("");
         tracing::debug!("Checking path redirect for: {}", redirect_key);
@@ -136,7 +138,13 @@ async fn handle_redirect(
     }
 
     // If no redirect found and we're on the main domain, show the list
-    if host == "rwth.cool" {
+    if host == DOMAIN && {
+        if let Some(Path(path)) = path {
+            path.is_empty()
+        } else {
+            true
+        }
+    } {
         // Convert the HashMap to a static reference - this is safe because redirects lives for the entire program
         let redirects_static = unsafe {
             std::mem::transmute::<
@@ -148,6 +156,6 @@ async fn handle_redirect(
             redirects: redirects_static,
         })
     } else {
-        AppResponse::NotFound("Redirect not found".to_string())
+        AppResponse::NotFound("# Redirect not found".to_string())
     }
 }
