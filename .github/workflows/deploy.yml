@@ -26,3 +26,7 @@ jobs:
             docker compose pull
             docker compose up -d --build --force-recreate
             docker system prune -f
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
