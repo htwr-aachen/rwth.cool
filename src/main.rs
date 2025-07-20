@@ -28,10 +28,32 @@ struct Config {
     redirects: HashMap<String, RedirectEntry>,
 }
 
+// New type to hold a sorted redirect entry
+#[derive(Debug)]
+struct SortedRedirect<'a> {
+    key: &'a str,
+    entry: &'a RedirectEntry,
+}
+
 #[derive(Template)]
 #[template(path = "index.html")]
 struct IndexTemplate<'a> {
-    redirects: &'a HashMap<String, RedirectEntry>,
+    redirects: Vec<SortedRedirect<'a>>,
+}
+
+impl<'a> IndexTemplate<'a> {
+    fn new(redirects: &'a HashMap<String, RedirectEntry>) -> Self {
+        let mut sorted_redirects: Vec<SortedRedirect> = redirects
+            .iter()
+            .map(|(key, entry)| SortedRedirect { key, entry })
+            .collect();
+
+        sorted_redirects.sort_by(|a, b| a.key.cmp(b.key));
+
+        Self {
+            redirects: sorted_redirects,
+        }
+    }
 }
 
 // Custom response type to handle both redirects and template rendering
@@ -93,11 +115,12 @@ async fn main() {
     let config_content =
         std::fs::read_to_string("redirects.toml").expect("Failed to read redirects.toml");
     let config: Config = toml::from_str(&config_content).expect("Failed to parse redirects.toml");
-    
+
     // Initialize the static redirects map
-    REDIRECTS_MAP.set(config.redirects.clone())
+    REDIRECTS_MAP
+        .set(config.redirects.clone())
         .expect("Failed to initialize static redirects map");
-    
+
     // Create a map of aliases to their primary keys
     let mut aliases_map = HashMap::new();
     for (key, entry) in REDIRECTS_MAP.get().unwrap() {
@@ -105,7 +128,7 @@ async fn main() {
             aliases_map.insert(alias.clone(), key.clone());
         }
     }
-    
+
     let redirects = Arc::new(REDIRECTS_MAP.get().unwrap().clone());
     let aliases_map = Arc::new(aliases_map);
 
@@ -142,13 +165,13 @@ async fn handle_redirect(
     // First try subdomain redirect
     if let Some(subdomain) = host.strip_suffix(&format!(".{DOMAIN}")) {
         tracing::debug!("Found subdomain: {}", subdomain);
-        
+
         // Check direct redirects first
         if let Some(target) = redirects.get(subdomain) {
             tracing::info!("Redirecting {} to {}", host, target.url);
             return AppResponse::Redirect(Redirect::permanent(&target.url));
         }
-        
+
         // Then check aliases
         if let Some(primary_key) = aliases_map.get(subdomain) {
             if let Some(target) = redirects.get(primary_key) {
@@ -187,9 +210,7 @@ async fn handle_redirect(
             true
         }
     } {
-        AppResponse::Template(IndexTemplate {
-            redirects: REDIRECTS_MAP.get().unwrap(),
-        })
+        AppResponse::Template(IndexTemplate::new(REDIRECTS_MAP.get().unwrap()))
     } else {
         AppResponse::NotFound("# Redirect not found".to_string())
     }
