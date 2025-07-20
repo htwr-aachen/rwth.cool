@@ -1,4 +1,4 @@
-# rwth.cool😎
+# RWTH.cool😎
 
 Source code of [RWTH.cool](https://rwth.cool).
 The site provides a collection of useful links for students at RWTH Aachen University, inspired by [TUM.sexy](https://tum.sexy).
