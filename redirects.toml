@@ -7,6 +7,7 @@
 [redirects.mensa]
 url = "https://www.studierendenwerk-aachen.de/de/Gastronomie/mensa-academica-wochenplan.html"
 description = "Check today's menu at Mensa Academica"
+aliases = ["hunger", "essen", "academica"]
 
 [redirects.mail]
 url = "https://mail.rwth-aachen.de"
@@ -15,10 +16,12 @@ description = "Access your RWTH email inbox"
 [redirects.online]
 url = "https://online.rwth-aachen.de"
 description = "Visit RWTHonline"
+aliases = ["o"]
 
 [redirects.moodle]
 url = "https://moodle.rwth-aachen.de"
 description = "Access your course materials" 
+aliases = ["m"]
 
 [redirects.notenstreicher]
 url = "https://notenstreicher.laurenzfg.com/"
@@ -44,3 +47,7 @@ description = "Studiencenter Informatik"
 url = "https://app.rwth-aachen.de/eduroam"
 description = "Manage eduroam devices"
 aliases = ["wifi", "eduroam", "roam"] 
+
+[redirects.htwr]
+url = "https://htwr-aachen.de"
+description = "Collection of RWTH CS materials"
