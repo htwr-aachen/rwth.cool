@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block content %}
 <div class="container">
     <header>
@@ -10,9 +11,13 @@
         <div class="redirects-grid">
             {% for (key, redirect) in redirects %}
             <a href="{{ redirect.url }}" class="redirect-card">
-                <h2>{{ key }}</h2>
-                <div class="redirect-url">{{ key }}.rwth.cool</div>
+                <h2>{{ key }}.rwth.cool</h2>
                 <div class="redirect-description">{{ redirect.description }}</div>
+                {% if redirect.aliases.len() > 0 %}
+                <div class="redirect-aliases">
+                    aliases: {{ redirect.aliases | join(", ") }}
+                </div>
+                {% endif %}
             </a>
             {% endfor %}
         </div>

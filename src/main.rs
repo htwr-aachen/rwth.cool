@@ -17,6 +17,8 @@ const DOMAIN: &str = "rwth.cool";
 struct RedirectEntry {
     url: String,
     description: String,
+    #[serde(default)]
+    aliases: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -70,6 +72,11 @@ fn strip_port(host: &str) -> &str {
     host.split(':').next().unwrap_or(host)
 }
 
+// Type aliases to simplify complex types
+type RedirectMap = Arc<HashMap<String, RedirectEntry>>;
+type AliasMap = Arc<HashMap<String, String>>;
+type AppState = (RedirectMap, AliasMap);
+
 #[tokio::main]
 async fn main() {
     // Initialize tracing
@@ -84,14 +91,24 @@ async fn main() {
     let config_content =
         std::fs::read_to_string("redirects.toml").expect("Failed to read redirects.toml");
     let config: Config = toml::from_str(&config_content).expect("Failed to parse redirects.toml");
+    
+    // Create a map of aliases to their primary keys
+    let mut aliases_map = HashMap::new();
+    for (key, entry) in &config.redirects {
+        for alias in &entry.aliases {
+            aliases_map.insert(alias.clone(), key.clone());
+        }
+    }
+    
     let redirects = Arc::new(config.redirects);
+    let aliases_map = Arc::new(aliases_map);
 
     // Create the router
     let app = Router::new()
         .route("/", get(handle_redirect))
         .route("/{*path}", get(handle_redirect))
         .layer(TraceLayer::new_for_http())
-        .with_state(redirects.clone());
+        .with_state((redirects.clone(), aliases_map.clone()));
 
     // Bind to all interfaces
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
@@ -105,7 +122,7 @@ async fn main() {
 // Combined handler for both root and path-based requests
 #[axum::debug_handler]
 async fn handle_redirect(
-    State(redirects): State<Arc<HashMap<String, RedirectEntry>>>,
+    State((redirects, aliases_map)): State<AppState>,
     path: Option<Path<String>>,
     headers: HeaderMap,
 ) -> impl IntoResponse {
@@ -119,9 +136,19 @@ async fn handle_redirect(
     // First try subdomain redirect
     if let Some(subdomain) = host.strip_suffix(&format!(".{DOMAIN}")) {
         tracing::debug!("Found subdomain: {}", subdomain);
+        
+        // Check direct redirects first
         if let Some(target) = redirects.get(subdomain) {
             tracing::info!("Redirecting {} to {}", host, target.url);
             return AppResponse::Redirect(Redirect::permanent(&target.url));
+        }
+        
+        // Then check aliases
+        if let Some(primary_key) = aliases_map.get(subdomain) {
+            if let Some(target) = redirects.get(primary_key) {
+                tracing::info!("Redirecting {} (alias) to {}", host, target.url);
+                return AppResponse::Redirect(Redirect::permanent(&target.url));
+            }
         }
     }
 
@@ -131,9 +158,18 @@ async fn handle_redirect(
         let redirect_key = path.split('/').next().unwrap_or("");
         tracing::debug!("Checking path redirect for: {}", redirect_key);
 
+        // Check direct redirects first
         if let Some(target) = redirects.get(redirect_key) {
             tracing::info!("Redirecting /{} to {}", redirect_key, target.url);
             return AppResponse::Redirect(Redirect::permanent(&target.url));
+        }
+
+        // Then check aliases
+        if let Some(primary_key) = aliases_map.get(redirect_key) {
+            if let Some(target) = redirects.get(primary_key) {
+                tracing::info!("Redirecting /{} (alias) to {}", redirect_key, target.url);
+                return AppResponse::Redirect(Redirect::permanent(&target.url));
+            }
         }
     }
 
@@ -145,7 +181,7 @@ async fn handle_redirect(
             true
         }
     } {
-        // Convert the HashMap to a static reference - this is safe because redirects lives for the entire program
+        // Convert the HashMap to static reference
         let redirects_static = unsafe {
             std::mem::transmute::<
                 &HashMap<String, RedirectEntry>,

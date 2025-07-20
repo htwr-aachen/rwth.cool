@@ -2,6 +2,7 @@
 # [redirects.subdomain]
 # url = "target_url"
 # description = "A short description"
+# aliases = ["alias1", "alias2"]  # Optional: Additional subdomains that point to the same target
 
 [redirects.mensa]
 url = "https://www.studierendenwerk-aachen.de/de/Gastronomie/mensa-academica-wochenplan.html"
@@ -41,4 +42,5 @@ description = "Studiencenter Informatik"
 
 [redirects.wlan]
 url = "https://app.rwth-aachen.de/eduroam"
-description = "Manage eduroam devices" 
+description = "Manage eduroam devices"
+aliases = ["wifi", "eduroam", "roam"] 

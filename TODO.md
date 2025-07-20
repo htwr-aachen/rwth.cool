@@ -1,6 +1,6 @@
 
 - [ ] deploy pipeline
-- [ ] redirect aliases
+- [x] redirect aliases
 - [ ] categories
 - [ ] sort `redirects.toml`
 - [ ] don't hardcode domain
