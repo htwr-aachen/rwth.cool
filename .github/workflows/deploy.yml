@@ -22,7 +22,8 @@ jobs:
           port: ${{ secrets.SERVER_SSH_PORT }}
           script: |
             cd rwth.cool/
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
             docker compose pull
             docker compose up -d --build --force-recreate
             docker system prune -f
