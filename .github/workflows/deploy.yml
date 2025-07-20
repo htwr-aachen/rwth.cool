@@ -24,5 +24,5 @@ jobs:
             cd rwth.cool/
             git pull origin main
             docker compose pull
-            docker compose up -d --build
+            docker compose up -d --build --force-recreate
             docker system prune -f
