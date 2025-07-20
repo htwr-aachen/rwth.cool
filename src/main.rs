@@ -6,14 +6,16 @@ use axum::{
     routing::get,
     Router,
 };
+use once_cell::sync::OnceCell;
 use serde::Deserialize;
 use std::{collections::HashMap, net::SocketAddr, sync::Arc};
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 const DOMAIN: &str = "rwth.cool";
+static REDIRECTS_MAP: OnceCell<HashMap<String, RedirectEntry>> = OnceCell::new();
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 struct RedirectEntry {
     url: String,
     description: String,
@@ -92,15 +94,19 @@ async fn main() {
         std::fs::read_to_string("redirects.toml").expect("Failed to read redirects.toml");
     let config: Config = toml::from_str(&config_content).expect("Failed to parse redirects.toml");
     
+    // Initialize the static redirects map
+    REDIRECTS_MAP.set(config.redirects.clone())
+        .expect("Failed to initialize static redirects map");
+    
     // Create a map of aliases to their primary keys
     let mut aliases_map = HashMap::new();
-    for (key, entry) in &config.redirects {
+    for (key, entry) in REDIRECTS_MAP.get().unwrap() {
         for alias in &entry.aliases {
             aliases_map.insert(alias.clone(), key.clone());
         }
     }
     
-    let redirects = Arc::new(config.redirects);
+    let redirects = Arc::new(REDIRECTS_MAP.get().unwrap().clone());
     let aliases_map = Arc::new(aliases_map);
 
     // Create the router
@@ -181,15 +187,8 @@ async fn handle_redirect(
             true
         }
     } {
-        // Convert the HashMap to static reference
-        let redirects_static = unsafe {
-            std::mem::transmute::<
-                &HashMap<String, RedirectEntry>,
-                &'static HashMap<String, RedirectEntry>,
-            >(&redirects)
-        };
         AppResponse::Template(IndexTemplate {
-            redirects: redirects_static,
+            redirects: REDIRECTS_MAP.get().unwrap(),
         })
     } else {
         AppResponse::NotFound("# Redirect not found".to_string())

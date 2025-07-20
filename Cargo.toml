@@ -16,3 +16,4 @@ hyper-util = { version = "0.1", features = ["tokio"] }
 askama = "0.14"
 http = "1.0"
 headers = "0.4"
+once_cell = "1.19"

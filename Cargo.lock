@@ -713,6 +713,7 @@ dependencies = [
  "http",
  "hyper",
  "hyper-util",
+ "once_cell",
  "serde",
  "tokio",
  "toml",
