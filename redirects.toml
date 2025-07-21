@@ -99,3 +99,13 @@ aliases = ["sprachzentrum", "lang", "language", "lc"]
 [redirects.upo]
 url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaacsyawsi"
 description = "Übergreifende Prüfungsordnung"
+
+[redirects.regapp]
+url = "https://regapp.itc.rwth-aachen.de/welcome/index.xhtml"
+description = "HPC Cluster Registration & Benutzerkonto App"
+aliases = ["hpc"]
+
+[redirects.hpcdocs]
+url = "https://help.itc.rwth-aachen.de/service/rhr4fjjutttf/"
+description = "HPC Cluster Dokumentation"
+
