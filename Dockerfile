@@ -11,6 +11,7 @@ FROM scratch
 
 WORKDIR /rwth.cool
 COPY templates templates
+COPY static static
 COPY redirects.toml .
 COPY --from=builder /rwth.cool/target/x86_64-unknown-linux-musl/release/rwth_cool .
 
