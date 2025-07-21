@@ -11,7 +11,7 @@ aliases = ["hunger", "essen", "academica"]
 
 [redirects.mail]
 url = "https://mail.rwth-aachen.de"
-description = "Access your RWTH email inbox"
+description = "Access your email inbox"
 
 [redirects.online]
 url = "https://online.rwth-aachen.de"
@@ -29,7 +29,7 @@ description = "Informatik Abschluss Notenstreicher"
 
 [redirects.wo]
 url = "https://www.rwth-aachen.de/go/id/cxcq"
-description = "RWTH Gebäudesuche" 
+description = "Gebäudesuche" 
 
 [redirects.offline]
 url = "https://rwthoffline.de/"
@@ -50,4 +50,47 @@ aliases = ["wifi", "eduroam", "roam"]
 
 [redirects.htwr]
 url = "https://htwr-aachen.de"
-description = "Collection of RWTH CS materials"
+description = "Collection of CS materials"
+
+[redirects.zpa]
+url = "https://www.rwth-aachen.de/cms/root/studium/Im-Studium/Pruefungsangelegenheiten/~cbcn/Kontakte-im-ZPA-nach-Sachgebieten"
+description = "ZPA Ansprechpersonen"
+
+[redirects.rwtf]
+url = "https://rwtf.dorianko.ch/"
+description = "Gym Utilization by Dorian Koch"
+
+[redirects.gymstats]
+url = "https://gymstats.the-codeboy.com/"
+description = "Gym Utilization by the-codeboy"
+
+[redirects.gym-tracker]
+url = "https://data-science-club.de/gym-tracker/"
+description = "Gym tracker by Data Science Club"
+aliases = ["gt"]
+
+[redirects.gym]
+url = "https://hochschulsport.rwth-aachen.de/cms/hsz/sport/sportangebot/fitnesstraining/~huqam/fitnesstrainingskarten/?lidx=1"
+description = "Gym website"
+
+[redirects.gymkarten]
+url = "https://buchung.hsz.rwth-aachen.de/angebote/aktueller_zeitraum/_Fitnesstrainingskarten.html"
+description = "Buy Gym membership"
+
+[redirects.s-inf]
+url = "http://s-inf.de/"
+description = "Skriptesammlung Informatik"
+
+[redirects.wahlpflicht]
+url = "https://sc.informatik.rwth-aachen.de/de/wahlpflicht/"
+description = "Current CS elective courses"
+aliases = ["elective"]
+
+[redirects.wahlpflichttabelle]
+url = "https://docs.google.com/spreadsheets/d/1oOVX-vhUPkz6hcY8otHVBr5wD80cAb8Nyp8YFY0vSpI/edit?gid=890111908#gid=890111908"
+description = "Informatik Wahlpflichtmodule Google Sheet"
+
+[redirects.sprachzentrum]
+url = "https://verwaltung.sz.rwth-aachen.de/st/"
+description = "Language Center website"
+aliases = ["lang", "language", "lc", "sz"]
