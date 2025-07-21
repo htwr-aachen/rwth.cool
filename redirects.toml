@@ -86,7 +86,7 @@ url = "https://sc.informatik.rwth-aachen.de/de/wahlpflicht/"
 description = "Current CS elective courses"
 aliases = ["elective"]
 
-[redirects.wahlpflichttabelle]
+[redirects.wptabelle]
 url = "https://docs.google.com/spreadsheets/d/1oOVX-vhUPkz6hcY8otHVBr5wD80cAb8Nyp8YFY0vSpI/edit?gid=890111908#gid=890111908"
 description = "Informatik Wahlpflichtmodule Google Sheet"
 
@@ -94,3 +94,7 @@ description = "Informatik Wahlpflichtmodule Google Sheet"
 url = "https://verwaltung.sz.rwth-aachen.de/st/"
 description = "Language Center website"
 aliases = ["lang", "language", "lc", "sz"]
+
+[redirects.upo]
+url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaacsyawsi"
+description = "Übergreifende Prüfungsordnung"
