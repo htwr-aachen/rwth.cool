@@ -59,7 +59,7 @@ description = "ZPA Ansprechpersonen"
 
 [redirects.rwtf]
 url = "https://rwtf.dorianko.ch/"
-description = "Gym Utilization by Dorian Koch"
+description = "Gym Utilization (and more) by Dorian Koch"
 
 [redirects.gymstats]
 url = "https://gymstats.the-codeboy.com/"
