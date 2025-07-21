@@ -96,6 +96,24 @@ fn strip_port(host: &str) -> &str {
     host.split(':').next().unwrap_or(host)
 }
 
+// Favicon handler
+async fn favicon() -> impl IntoResponse {
+    match std::fs::read("static/favicon.png") {
+        Ok(content) => (
+            StatusCode::OK,
+            [(CONTENT_TYPE, "image/x-icon")],
+            content,
+        )
+            .into_response(),
+        Err(_) => (
+            StatusCode::NOT_FOUND,
+            [(CONTENT_TYPE, "text/plain")],
+            "Favicon not found".to_string(),
+        )
+            .into_response(),
+    }
+}
+
 // Type aliases to simplify complex types
 type RedirectMap = Arc<HashMap<String, RedirectEntry>>;
 type AliasMap = Arc<HashMap<String, String>>;
@@ -134,6 +152,7 @@ async fn main() {
 
     // Create the router
     let app = Router::new()
+        .route("/favicon.png", get(favicon))
         .route("/", get(handle_redirect))
         .route("/{*path}", get(handle_redirect))
         .layer(TraceLayer::new_for_http())
