@@ -109,3 +109,7 @@ aliases = ["hpc"]
 url = "https://help.itc.rwth-aachen.de/service/rhr4fjjutttf/"
 description = "HPC Cluster Dokumentation"
 
+[redirects.quit]
+url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaaaaajyav&download=1"
+description = "Aufgeben ist die letzte Option!"
+alias = ["getmeoutofrwth", "aufgeben"]
