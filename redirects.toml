@@ -23,9 +23,10 @@ url = "https://moodle.rwth-aachen.de"
 description = "Access your course materials" 
 aliases = ["m"]
 
-[redirects.notenstreicher]
+[redirects.streicher]
 url = "https://notenstreicher.laurenzfg.com/"
 description = "Informatik Abschluss Notenstreicher" 
+aliases = ["notenstreicher"]
 
 [redirects.wo]
 url = "https://www.rwth-aachen.de/go/id/cxcq"
@@ -90,10 +91,10 @@ aliases = ["elective"]
 url = "https://docs.google.com/spreadsheets/d/1oOVX-vhUPkz6hcY8otHVBr5wD80cAb8Nyp8YFY0vSpI/edit?gid=890111908#gid=890111908"
 description = "Informatik Wahlpflichtmodule Google Sheet"
 
-[redirects.sprachzentrum]
+[redirects.sz]
 url = "https://verwaltung.sz.rwth-aachen.de/st/"
 description = "Language Center website"
-aliases = ["lang", "language", "lc", "sz"]
+aliases = ["sprachzentrum", "lang", "language", "lc"]
 
 [redirects.upo]
 url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaacsyawsi"
