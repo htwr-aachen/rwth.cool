@@ -113,3 +113,7 @@ description = "HPC Cluster Dokumentation"
 url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaaaaajyav&download=1"
 description = "Aufgeben ist die letzte Option!"
 alias = ["getmeoutofrwth", "aufgeben"]
+
+[redirects.fsphil]
+url = "https://www.fsphil.rwth-aachen.de"
+description = "Website of the Humanities and Social Sciences Department (Geistes- und Gesellschaftswissenschaften)"
