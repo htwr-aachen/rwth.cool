@@ -114,6 +114,6 @@ url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaaaaajyav&do
 description = "Aufgeben ist die letzte Option!"
 alias = ["getmeoutofrwth", "aufgeben"]
 
-[redirects.fsphil.fs]
+[redirects.fsphil]
 url = "https://www.fsphil.rwth-aachen.de"
 description = "Website of the Humanities and Social Sciences Department (Geistes- und Gesellschaftswissenschaften)"
