@@ -136,3 +136,4 @@ aliases = ["maphin","maphins"]
 [redirects.self-service]
 url = "https://idm.rwth-aachen.de/selfservice"
 description = "Configuration for your RWTH Identity (Token Manager, Passwords & more)"
+aliases = ["selfservice"]
