@@ -132,3 +132,7 @@ aliases = ["videoag","video-ag","recordings"]
 url = "https://www.fsmpi.rwth-aachen.de/"
 description = "Website of the student council for math, physics, and computer science"
 aliases = ["maphin","maphins"]
+
+[redirects.selfservice]
+url = "https://idm.rwth-aachen.de/selfservice"
+description = "Configuration for your RWTH Identity (Token Manager, Passwords & more)"
