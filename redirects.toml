@@ -140,3 +140,8 @@ description = "Configuration for your RWTH Identity (Token Manager, Passwords & 
 [redirects.status]
 url = "https://maintenance.itc.rwth-aachen.de/ticket/status/messages"
 description = "RWTH maintenance information"
+
+[redirects.kino]
+url = "https://www.filmstudio.rwth-aachen.de"
+description = "RWTH film studio"
+aliases = ["film", "cinema"]
