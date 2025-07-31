@@ -1,7 +1,7 @@
 ---
 services:
   rwth-cool:
-    build: .
+    image: docker pull ghcr.io/htwr-aachen/rwth.cool:main
     restart: always
     ports:
       - 3000:3000

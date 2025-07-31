@@ -99,12 +99,7 @@ fn strip_port(host: &str) -> &str {
 // Favicon handler
 async fn favicon() -> impl IntoResponse {
     match std::fs::read("static/favicon.png") {
-        Ok(content) => (
-            StatusCode::OK,
-            [(CONTENT_TYPE, "image/x-icon")],
-            content,
-        )
-            .into_response(),
+        Ok(content) => (StatusCode::OK, [(CONTENT_TYPE, "image/x-icon")], content).into_response(),
         Err(_) => (
             StatusCode::NOT_FOUND,
             [(CONTENT_TYPE, "text/plain")],

@@ -20,34 +20,34 @@ aliases = ["o"]
 
 [redirects.moodle]
 url = "https://moodle.rwth-aachen.de"
-description = "Access your course materials" 
+description = "Access your course materials"
 aliases = ["m"]
 
 [redirects.streicher]
 url = "https://notenstreicher.laurenzfg.com/"
-description = "Informatik Abschluss Notenstreicher" 
+description = "Informatik Abschluss Notenstreicher"
 aliases = ["notenstreicher"]
 
 [redirects.wo]
 url = "https://www.rwth-aachen.de/go/id/cxcq"
-description = "Gebäudesuche" 
+description = "Gebäudesuche"
 
 [redirects.offline]
 url = "https://rwthoffline.de/"
-description = "RWTHoffline (more usable course overview)" 
+description = "RWTHoffline (more usable course overview)"
 
 [redirects.supra]
 url = "https://supra.informatik.rwth-aachen.de"
-description = "CS seminar and practical registration" 
+description = "CS seminar and practical registration"
 
 [redirects.sc]
 url = "https://sc.informatik.rwth-aachen.de"
-description = "Studiencenter Informatik" 
+description = "Studiencenter Informatik"
 
 [redirects.wlan]
 url = "https://app.rwth-aachen.de/eduroam"
 description = "Manage eduroam devices"
-aliases = ["wifi", "eduroam", "roam"] 
+aliases = ["wifi", "eduroam", "roam"]
 
 [redirects.htwr]
 url = "https://htwr-aachen.de"
@@ -121,17 +121,23 @@ description = "Website of the Humanities and Social Sciences Department (Geistes
 [redirects.sport]
 url = "https://hochschulsport.rwth-aachen.de/cms/HSZ/Sport/~hpoua/Sportartensuche/"
 description = "Sport program website"
-aliases = ["hochschulsport", "sportangebot", "sportarten", "hs-sport", "hssport"]
+aliases = [
+  "hochschulsport",
+  "sportangebot",
+  "sportarten",
+  "hs-sport",
+  "hssport",
+]
 
 [redirects.video]
 url = "https://video.fsmpi.rwth-aachen.de/"
 description = "Lecture recordings website of the student council for math, physics, and computer science"
-aliases = ["videoag","video-ag","recordings"]
+aliases = ["videoag", "video-ag", "recordings"]
 
 [redirects.fsmpi]
 url = "https://www.fsmpi.rwth-aachen.de/"
 description = "Website of the student council for math, physics, and computer science"
-aliases = ["maphin","maphins"]
+aliases = ["maphin", "maphins"]
 
 [redirects.selfservice]
 url = "https://idm.rwth-aachen.de/selfservice"
