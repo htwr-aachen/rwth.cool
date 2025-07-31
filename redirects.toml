@@ -145,3 +145,8 @@ description = "RWTH maintenance information"
 url = "https://www.filmstudio.rwth-aachen.de"
 description = "RWTH film studio"
 aliases = ["film", "cinema"]
+
+[redirects.chat]
+url = "https://chat.kiconnect.nrw/"
+description = "RWTHgpt"
+aliases = ["gpt", "chatgpt"]
