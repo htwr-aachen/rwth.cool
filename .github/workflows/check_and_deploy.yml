@@ -13,25 +13,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy,rustfmt
+
       - name: Rust formatting
         run: cargo fmt --check
+
       - name: Rust lint with clippy
         env:
           RUSTFLAGS: "-D warnings"
         run: cargo clippy --all-targets --all-features -- -D warnings
-      - uses: kehoecj/validate-configs-action@v4.0.1
+
+      - name: Validate toml syntax
+        uses: kehoecj/validate-configs-action@v4.0.1
+
       - name: Download Taplo CLI
         run: curl -L -o taplo.gz "https://github.com/tamasfe/taplo/releases/download/0.10.0/taplo-linux-x86_64.gz"
+
       - name: Extract Taplo
         run: |
           gzip -d taplo.gz
           chmod +x taplo
           sudo mv taplo /usr/local/bin/
+
       - name: TOML formatting
         run: taplo fmt --check --diff '**/*.toml'
+
+      - name: Prettier formatting
+        uses: creyD/prettier_action@v4.6
+        with:
+          dry: true
+          prettier_options: --write **/*.html
 
   build_and_push_image:
     if: github.event_name != 'pull_request'
