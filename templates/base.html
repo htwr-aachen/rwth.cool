@@ -1,143 +1,147 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RWTH.cool - Quick Access Links</title>
     <link rel="icon" href="/favicon.png" />
     <style>
-        :root {
-            --primary-color: #00549F;
-            --secondary-color: #57AB27;
-            --background-color: #ffffff;
-            --card-background: #f8f9fa;
-            --text-color: #333333;
-        }
+      :root {
+        --primary-color: #00549f;
+        --secondary-color: #57ab27;
+        --background-color: #ffffff;
+        --card-background: #f8f9fa;
+        --text-color: #333333;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--background-color);
+      }
 
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+
+      .subtitle {
+        color: #666;
+        font-size: 1.1rem;
+      }
+
+      .redirects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .redirect-card {
+        display: block;
+        text-decoration: none;
+        background: var(--card-background);
+        border-radius: 8px;
+        padding: 1.25rem;
+        text-align: center;
+        transition:
+          transform 0.2s ease,
+          background-color 0.2s ease;
+        color: var(--text-color);
+      }
+
+      .redirect-card:hover {
+        transform: translateY(-2px);
+        background-color: #f0f1f2;
+      }
+
+      .redirect-card h2 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 500;
+      }
+
+      .redirect-url {
+        color: var(--text-color);
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .redirect-url span {
+        display: inline-block;
+        margin: 0.2rem;
+      }
+
+      .redirect-description {
+        color: #666;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+      }
+
+      .redirect-aliases {
+        color: #666;
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+      }
+
+      footer {
+        margin-top: 4rem;
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      footer p {
+        margin: 0.5rem 0;
+      }
+
+      footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        h1 {
-            color: var(--primary-color);
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 1.1rem;
+          padding: 1rem;
         }
 
         .redirects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
+          grid-template-columns: 1fr;
         }
 
-        .redirect-card {
-            display: block;
-            text-decoration: none;
-            background: var(--card-background);
-            border-radius: 8px;
-            padding: 1.25rem;
-            text-align: center;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-            color: var(--text-color);
+        h1 {
+          font-size: 2rem;
         }
-
-        .redirect-card:hover {
-            transform: translateY(-2px);
-            background-color: #f0f1f2;
-        }
-
-        .redirect-card h2 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 1.25rem;
-            font-weight: 500;
-        }
-
-        .redirect-url {
-            color: var(--text-color);
-            font-size: 0.9rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .redirect-url span {
-            display: inline-block;
-            margin: 0.2rem;
-        }
-
-        .redirect-description {
-            color: #666;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-        }
-
-        .redirect-aliases {
-            color: #666;
-            font-size: 0.80rem;
-            margin-top: 0.5rem;
-        }
-
-        footer {
-            margin-top: 4rem;
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        footer p {
-            margin: 0.5rem 0;
-        }
-
-        footer a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .redirects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     {% block content %}{% endblock %}
-</body>
-</html> 
+  </body>
+</html>

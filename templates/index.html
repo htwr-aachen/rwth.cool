@@ -1,31 +1,33 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container">
-    <header>
-        <h1>RWTH.cool😎</h1>
-        <p class="subtitle">Quick access to RWTH Aachen University resources</p>
-    </header>
-    
-    <main>
-        <div class="redirects-grid">
-            {% for redirect in redirects %}
-            <a href="{{ redirect.entry.url }}" class="redirect-card">
-                <h2>{{ redirect.key }}.rwth.cool</h2>
-                <div class="redirect-description">{{ redirect.entry.description }}</div>
-                {% if redirect.entry.aliases.len() > 0 %}
-                <div class="redirect-aliases">
-                    aliases: {{ redirect.entry.aliases | join(", ") }}
-                </div>
-                {% endif %}
-            </a>
-            {% endfor %}
-        </div>
-    </main>
+  <header>
+    <h1>RWTH.cool😎</h1>
+    <p class="subtitle">Quick access to RWTH Aachen University resources</p>
+  </header>
 
-    <footer>
-        <p>Inspired by <a href="https://tum.sexy" target="_blank">TUM.sexy</a></p>
-        <p><a href="https://github.com/htwr-aachen/rwth.cool" target="_blank">View on GitHub</a></p>
-    </footer>
+  <main>
+    <div class="redirects-grid">
+      {% for redirect in redirects %}
+      <a href="{{ redirect.entry.url }}" class="redirect-card">
+        <h2>{{ redirect.key }}.rwth.cool</h2>
+        <div class="redirect-description">{{ redirect.entry.description }}</div>
+        {% if redirect.entry.aliases.len() > 0 %}
+        <div class="redirect-aliases">
+          aliases: {{ redirect.entry.aliases | join(", ") }}
+        </div>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </main>
+
+  <footer>
+    <p>Inspired by <a href="https://tum.sexy" target="_blank">TUM.sexy</a></p>
+    <p>
+      <a href="https://github.com/htwr-aachen/rwth.cool" target="_blank"
+        >View on GitHub</a
+      >
+    </p>
+  </footer>
 </div>
-{% endblock %} 
+{% endblock %}
