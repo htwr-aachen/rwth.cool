@@ -158,6 +158,6 @@ description = "RWTHgpt"
 aliases = ["gpt", "chatgpt"]
 
 [redirects.ra]
-url = "ra-portal.itc.rwth-aachen.de"
+url = "https://ra-portal.itc.rwth-aachen.de"
 description = "Manage your RWTH certificates"
 aliases = ["cert", "sign"]
