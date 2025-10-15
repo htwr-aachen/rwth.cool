@@ -182,10 +182,10 @@ description = "Psychological counseling for students by RWTH"
 url = "https://www.ukaachen.de/kliniken-institute/klinik-fuer-psychiatrie-psychotherapie-und-psychosomatik/patientenversorgung/ambulante-versorgung/zpg/"
 description = "Psychological counseling for students by the University hospital Aachen (UKA)"
 
-[redirects.bafög]
+[redirects.bafoeg]
 url = "https://www.studierendenwerk-aachen.de/de/bafoeg_studienfinanzierung.html"
 description = "BaFög beantragen und Infos"
-aliases = ["bafoeg", "money"]
+aliases = ["money"]
 
 [redirects.carrer]
 url = "https://www.rwth-aachen.de/cms/root/studium/nach-dem-studium/~ejx/karriere/"
