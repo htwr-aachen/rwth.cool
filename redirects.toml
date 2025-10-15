@@ -211,6 +211,7 @@ description = "International and intercultural student initiative"
 [redirects.foreigners]
 url = "https://av.rwth-aachen.de/"
 description = "Representation for foreign students"
+aliases = ["av"]
 
 [redirects.study-map]
 url = "https://www.asta.rwth-aachen.de/lernraumkarte/"
@@ -223,6 +224,7 @@ description = "Community and events for queer people"
 [redirects.equality]
 url = "https://gsp.rwth-aachen.de"
 description = "Advice and events on the topic of equality at RWTH managed by student + they have cool stickers"
+aliases = ["gsp"]
 
 [redirects.second-thoughts]
 url = "https://www.rwth-aachen.de/cms/root/studium/im-studium/studienfachwechsel/~bjee/fachwechsel1/"
