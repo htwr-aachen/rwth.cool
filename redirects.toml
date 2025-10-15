@@ -177,3 +177,38 @@ description = "Calender with many events happening for students managed by asta"
 [redirects.psycho-councel]
 url = "https://www.rwth-aachen.de/go/id/sei"
 description = "Psychological counseling by RWTH"
+
+[redirects.bafög]
+url = "https://www.studierendenwerk-aachen.de/de/bafoeg_studienfinanzierung.html"
+description = "BaFög beantragen und Infos"
+aliases = ["bafoeg", "money"]
+
+[redirects.carrer]
+url = "https://www.rwth-aachen.de/cms/root/studium/nach-dem-studium/~ejx/karriere/"
+description = "Counseling and Workshops around your future career by RWTH"
+
+[redirects.bis]
+url = "https://www.rwth-aachen.de/cms/root/wir/einrichtungen/personalrat-vertretungen/~kckp/beauftragte-fuer-inklusives-studium/?allou=1"
+description = "Counseling and help around the topics of inclusion, accessibility, and equal opportunities at RWTH"
+
+[redirects.social-counsel]
+url = "https://www.asta.rwth-aachen.de/beratung/sozialberatung/"
+description = "Counseling around topics like Housing, BafÖg and how to finance your studies done by students for students (asta)"
+
+[redirects.international-support]
+url = "https://www.rwth-aachen.de/cms/root/wir/Einrichtungen/Verwaltung/Dezernate/Internationale-Hochschulbeziehungen/~rda/Abteilung-2-2-International-Support-Se/"
+description = "International Support Services for all things concerning international students"
+aliases = ["internationals","counseling"]
+
+[redirects.incas]
+url = "https://www.incas.rwth-aachen.de/"
+descriptions = "International and intercultural student initiative"
+aliases = ["internationals", "initiatives"]
+
+[redirects.foreigners]
+url = "https://av.rwth-aachen.de/"
+description = "Representation for foreign students"
+
+[redirects.study-map]
+url = "https://www.asta.rwth-aachen.de/lernraumkarte/"
+description = "A map of study rooms"
