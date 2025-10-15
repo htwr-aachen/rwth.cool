@@ -173,8 +173,9 @@ description = "Student council for mechanical engineers"
 [redirects.calendar]
 url = "https://asta.ac/kalender"
 description = "Calender with many events happening for students managed by asta"
+aliases = ["cal"]
 
-[redirects.psycho-councel-zsb]
+[redirects.psycho-counsel-zsb]
 url = "https://www.rwth-aachen.de/go/id/sei"
 description = "Psychological counseling for students by RWTH"
 
@@ -202,12 +203,10 @@ description = "Counseling around topics like Housing, BafÖg and how to finance 
 [redirects.international-support]
 url = "https://www.rwth-aachen.de/cms/root/wir/Einrichtungen/Verwaltung/Dezernate/Internationale-Hochschulbeziehungen/~rda/Abteilung-2-2-International-Support-Se/"
 description = "International Support Services for all things concerning international students"
-aliases = ["internationals","counseling"]
 
 [redirects.incas]
 url = "https://www.incas.rwth-aachen.de/"
-descriptions = "International and intercultural student initiative"
-aliases = ["internationals", "initiatives"]
+description = "International and intercultural student initiative"
 
 [redirects.foreigners]
 url = "https://av.rwth-aachen.de/"
@@ -220,10 +219,6 @@ description = "A map of study rooms"
 [redirects.queer]
 url = "https://www.queerreferat-aachen.de/"
 description = "Community and events for queer people"
-
-[redirects.language]
-url = "https://verwaltung.sz.rwth-aachen.de/st/"
-description = "Log In for the language courses at RWTH"
 
 [redirects.equality]
 url = "https://gsp.rwth-aachen.de"
