@@ -161,3 +161,19 @@ aliases = ["gpt", "chatgpt"]
 url = "https://ra-portal.itc.rwth-aachen.de"
 description = "Manage your RWTH certificates"
 aliases = ["cert", "sign"]
+
+[redirects.asta]
+url = "https://asta.rwth-aachen.de"
+description = "University-wide representative body for all students at RWTH"
+
+[redirects.fsmb]
+url = "https://fsmb.rwth-aachen.de"
+description = "Student council for mechanical engineers"
+
+[redirects.calendar]
+url = "https://asta.ac/kalender"
+description = "Calender with many events happening for students managed by asta"
+
+[redirects.psycho-councel]
+url = "https://www.rwth-aachen.de/go/id/sei"
+description = "Psychological counseling by RWTH"
