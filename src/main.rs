@@ -21,6 +21,8 @@ struct RedirectEntry {
     description: String,
     #[serde(default)]
     aliases: Vec<String>,
+    #[serde(default)]
+    category: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -35,24 +37,49 @@ struct SortedRedirect<'a> {
     entry: &'a RedirectEntry,
 }
 
+// Category group for organizing redirects
+#[derive(Debug)]
+struct CategoryGroup<'a> {
+    category: String,
+    redirects: Vec<SortedRedirect<'a>>,
+}
+
 #[derive(Template)]
 #[template(path = "index.html")]
 struct IndexTemplate<'a> {
-    redirects: Vec<SortedRedirect<'a>>,
+    categories: Vec<CategoryGroup<'a>>,
 }
 
 impl<'a> IndexTemplate<'a> {
     fn new(redirects: &'a HashMap<String, RedirectEntry>) -> Self {
-        let mut sorted_redirects: Vec<SortedRedirect> = redirects
-            .iter()
-            .map(|(key, entry)| SortedRedirect { key, entry })
+        use std::collections::BTreeMap;
+
+        // Group redirects by category
+        let mut category_map: BTreeMap<String, Vec<SortedRedirect>> = BTreeMap::new();
+
+        for (key, entry) in redirects {
+            let category = entry.category.clone().unwrap_or_else(|| "Other".to_string());
+            category_map
+                .entry(category)
+                .or_insert_with(Vec::new)
+                .push(SortedRedirect { key, entry });
+        }
+
+        // Sort redirects within each category and convert to CategoryGroup
+        let categories: Vec<CategoryGroup> = category_map
+            .into_iter()
+            .map(|(category, mut redirects)| {
+                redirects.sort_by(|a, b| a.key.cmp(b.key));
+                CategoryGroup {
+                    category,
+                    redirects,
+                }
+            })
             .collect();
 
-        sorted_redirects.sort_by(|a, b| a.key.cmp(b.key));
+        // Categories are already sorted by BTreeMap
 
-        Self {
-            redirects: sorted_redirects,
-        }
+        Self { categories }
     }
 }
 

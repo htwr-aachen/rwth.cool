@@ -6,19 +6,24 @@
   </header>
 
   <main>
-    <div class="redirects-grid">
-      {% for redirect in redirects %}
-      <a href="{{ redirect.entry.url }}" class="redirect-card">
-        <h2>{{ redirect.key }}.rwth.cool</h2>
-        <div class="redirect-description">{{ redirect.entry.description }}</div>
-        {% if redirect.entry.aliases.len() > 0 %}
-        <div class="redirect-aliases">
-          aliases: {{ redirect.entry.aliases | join(", ") }}
-        </div>
-        {% endif %}
-      </a>
-      {% endfor %}
-    </div>
+    {% for category_group in categories %}
+    <section class="category-section">
+      <h2 class="category-title">{{ category_group.category }}</h2>
+      <div class="redirects-grid">
+        {% for redirect in category_group.redirects %}
+        <a href="{{ redirect.entry.url }}" class="redirect-card">
+          <h3>{{ redirect.key }}.rwth.cool</h3>
+          <div class="redirect-description">{{ redirect.entry.description }}</div>
+          {% if redirect.entry.aliases.len() > 0 %}
+          <div class="redirect-aliases">
+            aliases: {{ redirect.entry.aliases | join(", ") }}
+          </div>
+          {% endif %}
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
   </main>
 
   <footer>

@@ -2,125 +2,153 @@
 # [redirects.subdomain]
 # url = "target_url"
 # description = "A short description"
+# category = "Category Name"  # Optional: Category for grouping
 # aliases = ["alias1", "alias2"]  # Optional: Additional subdomains that point to the same target
 
 [redirects.mensa]
 url = "https://www.studierendenwerk-aachen.de/de/Gastronomie/mensa-academica-wochenplan.html"
 description = "Check today's menu at Mensa Academica"
+category = "Academic"
 aliases = ["hunger", "essen", "academica"]
 
 [redirects.mail]
 url = "https://mail.rwth-aachen.de"
 description = "Access your email inbox"
+category = "Academic"
 
 [redirects.online]
 url = "https://online.rwth-aachen.de"
 description = "Visit RWTHonline"
+category = "Academic"
 aliases = ["o"]
 
 [redirects.moodle]
 url = "https://moodle.rwth-aachen.de"
 description = "Access your course materials"
+category = "Academic"
 aliases = ["m"]
 
 [redirects.streicher]
 url = "https://notenstreicher.laurenzfg.com/"
 description = "Informatik Abschluss Notenstreicher"
+category = "Academic"
 aliases = ["notenstreicher"]
 
 [redirects.wo]
 url = "https://www.rwth-aachen.de/go/id/cxcq"
 description = "Gebäudesuche"
+category = "Academic"
 
 [redirects.offline]
 url = "https://rwthoffline.de/"
 description = "RWTHoffline (more usable course overview)"
+category = "Academic"
 
 [redirects.supra]
 url = "https://supra.informatik.rwth-aachen.de"
 description = "CS seminar and practical registration"
+category = "Academic"
 
 [redirects.sc]
 url = "https://sc.informatik.rwth-aachen.de"
 description = "Studiencenter Informatik"
+category = "Academic"
 
 [redirects.wlan]
 url = "https://app.rwth-aachen.de/eduroam"
 description = "Manage eduroam devices"
+category = "IT & Infrastructure"
 aliases = ["wifi", "eduroam", "roam"]
 
 [redirects.htwr]
 url = "https://htwr-aachen.de"
 description = "Collection of CS materials"
+category = "Academic"
 
 [redirects.zpa]
 url = "https://www.rwth-aachen.de/cms/root/studium/Im-Studium/Pruefungsangelegenheiten/~cbcn/Kontakte-im-ZPA-nach-Sachgebieten"
 description = "ZPA Ansprechpersonen"
+category = "Student Services"
 
 [redirects.rwtf]
 url = "https://rwtf.dorianko.ch/"
 description = "Gym Utilization (and more) by Dorian Koch"
+category = "Gym & Sports"
 
 [redirects.gymstats]
 url = "https://gymstats.the-codeboy.com/"
 description = "Gym Utilization by the-codeboy"
+category = "Gym & Sports"
 
 [redirects.gym-tracker]
 url = "https://data-science-club.de/gym-tracker/"
 description = "Gym tracker by Data Science Club"
+category = "Gym & Sports"
 aliases = ["gt"]
 
 [redirects.gym]
 url = "https://hochschulsport.rwth-aachen.de/cms/hsz/sport/sportangebot/fitnesstraining/~huqam/fitnesstrainingskarten/?lidx=1"
 description = "Gym website"
+category = "Gym & Sports"
 
 [redirects.gymkarten]
 url = "https://buchung.hsz.rwth-aachen.de/angebote/aktueller_zeitraum/_Fitnesstrainingskarten.html"
 description = "Buy Gym membership"
+category = "Gym & Sports"
 
 [redirects.s-inf]
 url = "http://s-inf.de/"
 description = "Skriptesammlung Informatik"
+category = "Academic"
 
 [redirects.wahlpflicht]
 url = "https://sc.informatik.rwth-aachen.de/de/wahlpflicht/"
 description = "Current CS elective courses"
+category = "Academic"
 aliases = ["elective"]
 
 [redirects.wptabelle]
 url = "https://docs.google.com/spreadsheets/d/1oOVX-vhUPkz6hcY8otHVBr5wD80cAb8Nyp8YFY0vSpI/edit?gid=890111908#gid=890111908"
 description = "Informatik Wahlpflichtmodule Google Sheet"
+category = "Academic"
 
 [redirects.sz]
 url = "https://verwaltung.sz.rwth-aachen.de/st/"
 description = "Language Center website"
+category = "Academic"
 aliases = ["sprachzentrum", "lang", "language", "lc"]
 
 [redirects.upo]
 url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaacsyawsi"
 description = "Übergreifende Prüfungsordnung"
+category = "Student Services"
 
 [redirects.regapp]
 url = "https://regapp.itc.rwth-aachen.de/welcome/index.xhtml"
 description = "HPC Cluster Registration & Benutzerkonto App"
+category = "IT & Infrastructure"
 aliases = ["hpc"]
 
 [redirects.hpcdocs]
 url = "https://help.itc.rwth-aachen.de/service/rhr4fjjutttf/"
 description = "HPC Cluster Dokumentation"
+category = "IT & Infrastructure"
 
 [redirects.quit]
 url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaaaaajyav&download=1"
 description = "Aufgeben ist die letzte Option!"
+category = "Student Services"
 alias = ["getmeoutofrwth", "aufgeben"]
 
 [redirects.fsphil]
 url = "https://www.fsphil.rwth-aachen.de"
 description = "Website of the Humanities and Social Sciences Department (Geistes- und Gesellschaftswissenschaften)"
+category = "Student Councils"
 
 [redirects.sport]
 url = "https://hochschulsport.rwth-aachen.de/cms/HSZ/Sport/~hpoua/Sportartensuche/"
 description = "Sport program website"
+category = "Gym & Sports"
 aliases = [
   "hochschulsport",
   "sportangebot",
@@ -132,100 +160,123 @@ aliases = [
 [redirects.video]
 url = "https://video.fsmpi.rwth-aachen.de/"
 description = "Lecture recordings website of the student council for math, physics, and computer science"
+category = "Academic"
 aliases = ["videoag", "video-ag", "recordings"]
 
 [redirects.fsmpi]
 url = "https://www.fsmpi.rwth-aachen.de/"
 description = "Website of the student council for math, physics, and computer science"
+category = "Student Councils"
 aliases = ["maphin", "maphins"]
 
 [redirects.selfservice]
 url = "https://idm.rwth-aachen.de/selfservice"
 description = "Configuration for your RWTH Identity (Token Manager, Passwords & more)"
+category = "IT & Infrastructure"
 
 [redirects.status]
 url = "https://maintenance.itc.rwth-aachen.de/ticket/status/messages"
 description = "RWTH maintenance information"
+category = "IT & Infrastructure"
 
 [redirects.kino]
 url = "https://www.filmstudio.rwth-aachen.de"
 description = "RWTH film studio"
+category = "Student Services"
 aliases = ["film", "cinema"]
 
 [redirects.chat]
 url = "https://chat.kiconnect.nrw/"
 description = "RWTHgpt"
+category = "IT & Infrastructure"
 aliases = ["gpt", "chatgpt"]
 
 [redirects.ra]
 url = "https://ra-portal.itc.rwth-aachen.de"
 description = "Manage your RWTH certificates"
+category = "IT & Infrastructure"
 aliases = ["cert", "sign"]
 
 [redirects.asta]
 url = "https://asta.rwth-aachen.de"
 description = "University-wide representative body for all students at RWTH"
+category = "Student Councils"
 
 [redirects.fsmb]
 url = "https://fsmb.rwth-aachen.de"
 description = "Student council for mechanical engineers"
+category = "Student Councils"
 
 [redirects.calendar]
 url = "https://asta.ac/kalender"
 description = "Calender with many events happening for students managed by asta"
+category = "Student Services"
 aliases = ["cal"]
 
 [redirects.psycho-counsel-zsb]
 url = "https://www.rwth-aachen.de/go/id/sei"
 description = "Psychological counseling for students by RWTH"
+category = "Counseling & Support"
 
 [redirects.psycho-counsel-uka]
 url = "https://www.ukaachen.de/kliniken-institute/klinik-fuer-psychiatrie-psychotherapie-und-psychosomatik/patientenversorgung/ambulante-versorgung/zpg/"
 description = "Psychological counseling for students by the University hospital Aachen (UKA)"
+category = "Counseling & Support"
 
 [redirects.bafoeg]
 url = "https://www.studierendenwerk-aachen.de/de/bafoeg_studienfinanzierung.html"
 description = "BaFög beantragen und Infos"
+category = "Student Services"
 aliases = ["money"]
 
 [redirects.carrer]
 url = "https://www.rwth-aachen.de/cms/root/studium/nach-dem-studium/~ejx/karriere/"
 description = "Counseling and Workshops around your future career by RWTH"
+category = "Counseling & Support"
 
 [redirects.bis]
 url = "https://www.rwth-aachen.de/cms/root/wir/einrichtungen/personalrat-vertretungen/~kckp/beauftragte-fuer-inklusives-studium/?allou=1"
 description = "Counseling and help around the topics of inclusion, accessibility, and equal opportunities at RWTH"
+category = "Counseling & Support"
 
 [redirects.social-counsel]
 url = "https://www.asta.rwth-aachen.de/beratung/sozialberatung/"
 description = "Counseling around topics like Housing, BafÖg and how to finance your studies done by students for students (asta)"
+category = "Counseling & Support"
 
 [redirects.international-support]
 url = "https://www.rwth-aachen.de/cms/root/wir/Einrichtungen/Verwaltung/Dezernate/Internationale-Hochschulbeziehungen/~rda/Abteilung-2-2-International-Support-Se/"
 description = "International Support Services for all things concerning international students"
+category = "Student Services"
 
 [redirects.incas]
 url = "https://www.incas.rwth-aachen.de/"
 description = "International and intercultural student initiative"
+category = "Student Services"
 
 [redirects.foreigners]
 url = "https://av.rwth-aachen.de/"
 description = "Representation for foreign students"
+category = "Student Councils"
 aliases = ["av"]
 
 [redirects.study-map]
 url = "https://www.asta.rwth-aachen.de/lernraumkarte/"
 description = "A map of study rooms"
+category = "Student Services"
 
 [redirects.queer]
 url = "https://www.queerreferat-aachen.de/"
 description = "Community and events for queer people"
+category = "Student Services"
 
 [redirects.equality]
 url = "https://gsp.rwth-aachen.de"
 description = "Advice and events on the topic of equality at RWTH managed by student + they have cool stickers"
+category = "Student Services"
 aliases = ["gsp"]
 
 [redirects.second-thoughts]
 url = "https://www.rwth-aachen.de/cms/root/studium/im-studium/studienfachwechsel/~bjee/fachwechsel1/"
 description = "Advice for when you are second guessing whether studying (your course) is serving you by RWTH"
+category = "Counseling & Support"
