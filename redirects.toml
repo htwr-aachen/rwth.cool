@@ -280,3 +280,15 @@ aliases = ["gsp"]
 url = "https://www.rwth-aachen.de/cms/root/studium/im-studium/studienfachwechsel/~bjee/fachwechsel1/"
 description = "Advice for when you are second guessing whether studying (your course) is serving you by RWTH"
 category = "Counseling & Support"
+
+[redirects.tex]
+url = "https://rwth-aachen.sciebo.de/apps/overleaf_nextcloud/launcher/launch"
+description = "RWTH Sciebo Overleaf instance"
+category = "IT & Infrastructure"
+aliases = ["overleaf", "latex"]
+
+[redirects.cloud]
+url = "https://rwth-aachen.sciebo.de/login"
+description = "Sciebo Hochschulcloud"
+category = "IT & Infrastructure"
+aliases = ["sciebo", "filestorage"]
