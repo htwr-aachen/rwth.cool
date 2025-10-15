@@ -68,7 +68,7 @@ category = "Academic"
 [redirects.zpa]
 url = "https://www.rwth-aachen.de/cms/root/studium/Im-Studium/Pruefungsangelegenheiten/~cbcn/Kontakte-im-ZPA-nach-Sachgebieten"
 description = "ZPA Ansprechpersonen"
-category = "Student Services"
+category = "Academic"
 
 [redirects.rwtf]
 url = "https://rwtf.dorianko.ch/"
@@ -121,7 +121,7 @@ aliases = ["sprachzentrum", "lang", "language", "lc"]
 [redirects.upo]
 url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaacsyawsi"
 description = "Übergreifende Prüfungsordnung"
-category = "Student Services"
+category = "Academic"
 
 [redirects.regapp]
 url = "https://regapp.itc.rwth-aachen.de/welcome/index.xhtml"
@@ -137,7 +137,7 @@ category = "IT & Infrastructure"
 [redirects.quit]
 url = "https://www.rwth-aachen.de/global/show_document.asp?id=aaaaaaaaaaajyav&download=1"
 description = "Aufgeben ist die letzte Option!"
-category = "Student Services"
+category = "Academic"
 alias = ["getmeoutofrwth", "aufgeben"]
 
 [redirects.fsphil]
@@ -160,7 +160,7 @@ aliases = [
 [redirects.video]
 url = "https://video.fsmpi.rwth-aachen.de/"
 description = "Lecture recordings website of the student council for math, physics, and computer science"
-category = "Academic"
+category = "Student Services"
 aliases = ["videoag", "video-ag", "recordings"]
 
 [redirects.fsmpi]
@@ -226,7 +226,7 @@ category = "Counseling & Support"
 [redirects.bafoeg]
 url = "https://www.studierendenwerk-aachen.de/de/bafoeg_studienfinanzierung.html"
 description = "BaFög beantragen und Infos"
-category = "Student Services"
+category = "Academic"
 aliases = ["money"]
 
 [redirects.carrer]
@@ -247,12 +247,12 @@ category = "Counseling & Support"
 [redirects.international-support]
 url = "https://www.rwth-aachen.de/cms/root/wir/Einrichtungen/Verwaltung/Dezernate/Internationale-Hochschulbeziehungen/~rda/Abteilung-2-2-International-Support-Se/"
 description = "International Support Services for all things concerning international students"
-category = "Student Services"
+category = "Counseling & Support"
 
 [redirects.incas]
 url = "https://www.incas.rwth-aachen.de/"
 description = "International and intercultural student initiative"
-category = "Student Services"
+category = "Counseling & Support"
 
 [redirects.foreigners]
 url = "https://av.rwth-aachen.de/"
