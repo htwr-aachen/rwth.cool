@@ -174,9 +174,13 @@ description = "Student council for mechanical engineers"
 url = "https://asta.ac/kalender"
 description = "Calender with many events happening for students managed by asta"
 
-[redirects.psycho-councel]
+[redirects.psycho-councel-zsb]
 url = "https://www.rwth-aachen.de/go/id/sei"
-description = "Psychological counseling by RWTH"
+description = "Psychological counseling for students by RWTH"
+
+[redirects.psycho-counsel-uka]
+url = "https://www.ukaachen.de/kliniken-institute/klinik-fuer-psychiatrie-psychotherapie-und-psychosomatik/patientenversorgung/ambulante-versorgung/zpg/"
+description = "Psychological counseling for students by the University hospital Aachen (UKA)"
 
 [redirects.bafög]
 url = "https://www.studierendenwerk-aachen.de/de/bafoeg_studienfinanzierung.html"
@@ -212,3 +216,19 @@ description = "Representation for foreign students"
 [redirects.study-map]
 url = "https://www.asta.rwth-aachen.de/lernraumkarte/"
 description = "A map of study rooms"
+
+[redirects.queer]
+url = "https://www.queerreferat-aachen.de/"
+description = "Community and events for queer people"
+
+[redirects.language]
+url = "https://verwaltung.sz.rwth-aachen.de/st/"
+description = "Log In for the language courses at RWTH"
+
+[redirects.equality]
+url = "https://gsp.rwth-aachen.de"
+description = "Advice and events on the topic of equality at RWTH managed by student + they have cool stickers"
+
+[redirects.second-thoughts]
+url = "https://www.rwth-aachen.de/cms/root/studium/im-studium/studienfachwechsel/~bjee/fachwechsel1/"
+description = "Advice for when you are second guessing whether studying (your course) is serving you by RWTH"
