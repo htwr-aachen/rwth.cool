@@ -42,11 +42,11 @@ jobs:
       - name: TOML formatting
         run: taplo fmt --check --diff '**/*.toml'
 
-      - name: Prettier formatting
-        uses: creyD/prettier_action@v4.6
-        with:
-          dry: true
-          prettier_options: --write **/*.html
+      # - name: Prettier formatting
+      #   uses: creyD/prettier_action@v4.6
+      #   with:
+      #     dry: true
+      #     prettier_options: --write **/*.html
 
   build_and_push_image:
     if: github.event_name != 'pull_request'

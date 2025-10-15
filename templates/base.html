@@ -52,6 +52,34 @@
         font-size: 1.1rem;
       }
 
+      .search-container {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        position: relative;
+      }
+
+      #search-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        transition: border-color 0.2s ease;
+        font-family: inherit;
+      }
+
+      #search-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+      }
+
+      #search-results-count {
+        margin-top: 0.5rem;
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+      }
+
       .category-section {
         margin-bottom: 3rem;
       }
@@ -81,6 +109,11 @@
           transform 0.2s ease,
           background-color 0.2s ease;
         color: var(--text-color);
+      }
+
+      .redirect-card mark {
+        background-color: #ffeb3b;
+        color: inherit;
       }
 
       .redirect-card:hover {

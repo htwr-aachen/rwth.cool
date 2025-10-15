@@ -58,10 +58,13 @@ impl<'a> IndexTemplate<'a> {
         let mut category_map: BTreeMap<String, Vec<SortedRedirect>> = BTreeMap::new();
 
         for (key, entry) in redirects {
-            let category = entry.category.clone().unwrap_or_else(|| "Other".to_string());
+            let category = entry
+                .category
+                .clone()
+                .unwrap_or_else(|| "Other".to_string());
             category_map
                 .entry(category)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(SortedRedirect { key, entry });
         }
 

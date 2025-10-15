@@ -5,25 +5,56 @@
     <p class="subtitle">Quick access to RWTH Aachen University resources</p>
   </header>
 
-  <main>
-    {% for category_group in categories %}
-    <section class="category-section">
-      <h2 class="category-title">{{ category_group.category }}</h2>
-      <div class="redirects-grid">
-        {% for redirect in category_group.redirects %}
-        <a href="{{ redirect.entry.url }}" class="redirect-card">
-          <h3>{{ redirect.key }}.rwth.cool</h3>
-          <div class="redirect-description">{{ redirect.entry.description }}</div>
+  <div class="search-container">
+    <input
+      type="text"
+      id="search-input"
+      placeholder="Search redirects..."
+      autocomplete="off"
+    />
+    <div id="search-results-count"></div>
+  </div>
+
+  <main id="main-content">
+    <!-- Search results will be inserted here when searching -->
+    <div id="search-results" style="display: none">
+      <div class="redirects-grid" id="search-results-grid"></div>
+    </div>
+
+    <!-- Original categorized view -->
+    <div id="categorized-view">
+      {% for category_group in categories %}
+      <section
+        class="category-section"
+        data-category="{{ category_group.category }}"
+      >
+        <h2 class="category-title">{{ category_group.category }}</h2>
+        <div class="redirects-grid">
+          {% for redirect in category_group.redirects %}
+          <a
+            href="{{ redirect.entry.url }}"
+            class="redirect-card"
+            data-key="{{ redirect.key }}"
+            data-description="{{ redirect.entry.description }}"
+            data-aliases="{{ redirect.entry.aliases | join(", ") }}"
+            data-url="{{ redirect.entry.url }}"
+            data-category="{{ category_group.category }}"
+          >
+          <h3 class="card-title">{{ redirect.key }}.rwth.cool</h3>
+          <div class="redirect-description">
+            {{ redirect.entry.description }}
+          </div>
           {% if redirect.entry.aliases.len() > 0 %}
           <div class="redirect-aliases">
             aliases: {{ redirect.entry.aliases | join(", ") }}
           </div>
           {% endif %}
-        </a>
-        {% endfor %}
-      </div>
-    </section>
-    {% endfor %}
+          </a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endfor %}
+    </div>
   </main>
 
   <footer>
@@ -35,4 +66,155 @@
     </p>
   </footer>
 </div>
+
+<script>
+  // Fuzzy match function that returns match indices
+  function fuzzyMatchWithIndices(text, search) {
+    text = text.toLowerCase();
+    search = search.toLowerCase();
+
+    const indices = [];
+    let searchIndex = 0;
+
+    for (let i = 0; i < text.length && searchIndex < search.length; i++) {
+      if (text[i] === search[searchIndex]) {
+        indices.push(i);
+        searchIndex++;
+      }
+    }
+
+    return searchIndex === search.length ? indices : null;
+  }
+
+  // Highlight matched characters in text
+  function highlightMatches(text, indices) {
+    if (!indices || indices.length === 0) return text;
+
+    let result = "";
+    for (let i = 0; i < text.length; i++) {
+      if (indices.includes(i)) {
+        result += `<mark>${text[i]}</mark>`;
+      } else {
+        result += text[i];
+      }
+    }
+    return result;
+  }
+
+  // Calculate match score (lower is better)
+  function calculateScore(key, description, aliases, search) {
+    const keyMatch = fuzzyMatchWithIndices(key, search);
+    const descMatch = fuzzyMatchWithIndices(description, search);
+    const aliasMatch = fuzzyMatchWithIndices(aliases, search);
+
+    // Priority: key > aliases > description
+    if (keyMatch) return { score: 1, type: "key", indices: keyMatch };
+    if (aliasMatch) return { score: 2, type: "aliases", indices: aliasMatch };
+    if (descMatch) return { score: 3, type: "description", indices: descMatch };
+
+    return null;
+  }
+
+  // Filter redirects based on search
+  function filterRedirects() {
+    const searchTerm = document.getElementById("search-input").value.trim();
+    const categorizedView = document.getElementById("categorized-view");
+    const searchResults = document.getElementById("search-results");
+    const searchResultsGrid = document.getElementById("search-results-grid");
+
+    if (searchTerm === "") {
+      // Show categorized view, hide search results
+      categorizedView.style.display = "block";
+      searchResults.style.display = "none";
+      document.getElementById("search-results-count").textContent = "";
+      return;
+    }
+
+    // Hide categorized view, show search results
+    categorizedView.style.display = "none";
+    searchResults.style.display = "block";
+
+    // Get all cards from all categories
+    const allCards = document.querySelectorAll(
+      "#categorized-view .redirect-card",
+    );
+    const matches = [];
+
+    allCards.forEach((card) => {
+      const key = card.dataset.key || "";
+      const description = card.dataset.description || "";
+      const aliases = card.dataset.aliases || "";
+      const url = card.dataset.url || "";
+      const category = card.dataset.category || "";
+
+      const matchResult = calculateScore(key, description, aliases, searchTerm);
+
+      if (matchResult) {
+        matches.push({
+          card,
+          key,
+          description,
+          aliases,
+          url,
+          category,
+          ...matchResult,
+        });
+      }
+    });
+
+    // Sort matches by score (priority)
+    matches.sort((a, b) => a.score - b.score);
+
+    // Clear and populate search results
+    searchResultsGrid.innerHTML = "";
+
+    matches.forEach((match) => {
+      // Clone the card
+      const newCard = document.createElement("a");
+      newCard.href = match.url;
+      newCard.className = "redirect-card";
+
+      // Create highlighted content
+      let titleHTML = match.key;
+      let descHTML = match.description;
+      let aliasHTML = match.aliases;
+
+      if (match.type === "key") {
+        titleHTML = highlightMatches(match.key, match.indices);
+      } else if (match.type === "description") {
+        descHTML = highlightMatches(match.description, match.indices);
+      } else if (match.type === "aliases") {
+        aliasHTML = highlightMatches(match.aliases, match.indices);
+      }
+
+      newCard.innerHTML = `
+        <h3 class="card-title">${titleHTML}.rwth.cool</h3>
+        <div class="redirect-description">${descHTML}</div>
+        ${match.aliases ? `<div class="redirect-aliases">aliases: ${aliasHTML}</div>` : ""}
+      `;
+
+      searchResultsGrid.appendChild(newCard);
+    });
+
+    // Update results count
+    const resultsText =
+      matches.length === 1
+        ? "1 result found"
+        : `${matches.length} results found`;
+    document.getElementById("search-results-count").textContent = resultsText;
+  }
+
+  // Add event listener
+  document
+    .getElementById("search-input")
+    .addEventListener("input", filterRedirects);
+
+  // Focus search on "/" key press
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "/" && document.activeElement.tagName !== "INPUT") {
+      e.preventDefault();
+      document.getElementById("search-input").focus();
+    }
+  });
+</script>
 {% endblock %}
