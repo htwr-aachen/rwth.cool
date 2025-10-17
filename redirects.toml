@@ -31,18 +31,18 @@ aliases = ["m"]
 [redirects.streicher]
 url = "https://notenstreicher.laurenzfg.com/"
 description = "Informatik Abschluss Notenstreicher"
-category = "Academic"
+category = "Useful Tools"
 aliases = ["notenstreicher"]
 
 [redirects.wo]
 url = "https://www.rwth-aachen.de/go/id/cxcq"
 description = "Gebäudesuche"
-category = "Academic"
+category = "Useful Tools"
 
 [redirects.offline]
 url = "https://rwthoffline.de/"
 description = "RWTHoffline (more usable course overview)"
-category = "Academic"
+category = "Student Services"
 
 [redirects.supra]
 url = "https://supra.informatik.rwth-aachen.de"
@@ -110,7 +110,7 @@ aliases = ["elective"]
 [redirects.wptabelle]
 url = "https://docs.google.com/spreadsheets/d/1oOVX-vhUPkz6hcY8otHVBr5wD80cAb8Nyp8YFY0vSpI/edit?gid=890111908#gid=890111908"
 description = "Informatik Wahlpflichtmodule Google Sheet"
-category = "Academic"
+category = "Student Services"
 
 [redirects.sz]
 url = "https://verwaltung.sz.rwth-aachen.de/st/"
@@ -263,7 +263,7 @@ aliases = ["av"]
 [redirects.study-map]
 url = "https://www.asta.rwth-aachen.de/lernraumkarte/"
 description = "A map of study rooms"
-category = "Student Services"
+category = "Useful Tools"
 
 [redirects.queer]
 url = "https://www.queerreferat-aachen.de/"
@@ -292,3 +292,9 @@ url = "https://rwth-aachen.sciebo.de/login"
 description = "Sciebo Hochschulcloud"
 category = "IT & Infrastructure"
 aliases = ["sciebo", "filestorage"]
+
+[redirects.extension]
+url = "https://github.com/Rc-Cookie/quality-of-rwth"
+description = "Browser extension to improve RWTH web pages, including skipping login pages"
+category = "Useful Tools"
+aliases = ["quality", "browser"]
