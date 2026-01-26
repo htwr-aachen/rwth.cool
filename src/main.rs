@@ -176,6 +176,32 @@ async fn favicon() -> impl IntoResponse {
     }
 }
 
+// Robots.txt handler
+async fn robots_txt() -> impl IntoResponse {
+    match std::fs::read_to_string("static/robots.txt") {
+        Ok(content) => (StatusCode::OK, [(CONTENT_TYPE, "text/plain; charset=utf-8")], content).into_response(),
+        Err(_) => (
+            StatusCode::NOT_FOUND,
+            [(CONTENT_TYPE, "text/plain")],
+            "robots.txt not found".to_string(),
+        )
+            .into_response(),
+    }
+}
+
+// Sitemap.xml handler
+async fn sitemap_xml() -> impl IntoResponse {
+    let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://rwth.cool</loc>
+  </url>
+</urlset>
+"#;
+    
+    (StatusCode::OK, [(CONTENT_TYPE, "application/xml; charset=utf-8")], xml).into_response()
+}
+
 // Type aliases to simplify complex types
 type RedirectMap = Arc<HashMap<String, RedirectEntry>>;
 type AliasMap = Arc<HashMap<String, String>>;
@@ -215,6 +241,8 @@ async fn main() {
     // Create the router
     let app = Router::new()
         .route("/favicon.png", get(favicon))
+        .route("/robots.txt", get(robots_txt))
+        .route("/sitemap.xml", get(sitemap_xml))
         .route("/", get(handle_redirect))
         .route("/{*path}", get(handle_redirect))
         .layer(TraceLayer::new_for_http())
