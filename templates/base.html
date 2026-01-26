@@ -128,43 +128,68 @@
         font-size: 0.9rem;
       }
 
-      .theme-toggle {
+      .theme-switch {
         position: fixed;
         top: 1rem;
         right: 1rem;
-        background: var(--card-background);
-        border: 2px solid var(--border-color);
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
+        z-index: 1000;
         cursor: pointer;
+      }
+
+      .theme-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        position: absolute;
+      }
+
+      .theme-switch .slider {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 1.4rem;
-        transition: transform 0.2s ease, background-color 0.2s ease;
-        z-index: 1000;
+        justify-content: space-between;
+        width: 56px;
+        height: 28px;
+        background: var(--card-background);
+        border: 2px solid var(--border-color);
+        border-radius: 28px;
+        padding: 0 6px;
+        position: relative;
+        transition: background-color 0.3s ease;
       }
 
-      .theme-toggle:hover {
-        transform: scale(1.1);
-        background: var(--card-hover);
+      .theme-switch .slider::before {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s ease;
       }
 
-      .theme-toggle .sun-icon {
-        display: none;
+      .theme-switch input:checked + .slider::before {
+        transform: translateX(28px);
       }
 
-      .theme-toggle .moon-icon {
-        display: block;
+      .theme-switch .sun-icon,
+      .theme-switch .moon-icon {
+        color: var(--text-muted);
+        z-index: 1;
+        transition: color 0.3s ease;
       }
 
-      [data-theme="dark"] .theme-toggle .sun-icon {
-        display: block;
+      .theme-switch .sun-icon {
+        color: var(--primary-color);
       }
 
-      [data-theme="dark"] .theme-toggle .moon-icon {
-        display: none;
+      [data-theme="dark"] .theme-switch .sun-icon {
+        color: var(--text-muted);
+      }
+
+      [data-theme="dark"] .theme-switch .moon-icon {
+        color: var(--primary-color);
       }
 
       .category-section {
@@ -278,6 +303,30 @@
 
         h1 {
           font-size: 2rem;
+        }
+
+        .theme-switch {
+          top: 0.5rem;
+          right: 0.5rem;
+        }
+
+        .theme-switch .slider {
+          width: 48px;
+          height: 24px;
+        }
+
+        .theme-switch .slider::before {
+          width: 16px;
+          height: 16px;
+        }
+
+        .theme-switch input:checked + .slider::before {
+          transform: translateX(24px);
+        }
+
+        .theme-switch svg {
+          width: 12px;
+          height: 12px;
         }
       }
     </style>
