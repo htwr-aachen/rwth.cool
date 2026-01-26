@@ -12,8 +12,45 @@ use std::{collections::HashMap, net::SocketAddr, sync::Arc};
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-const DOMAIN: &str = "rwth.cool";
 static REDIRECTS_MAP: OnceCell<HashMap<String, RedirectEntry>> = OnceCell::new();
+
+/// Check if a host is considered a "main domain" host (where we show the index page)
+/// Returns true for hosts without subdomains (localhost, IPs, or two-part domains like example.com)
+fn is_main_domain(host: &str) -> bool {
+    // No dots means no subdomain (localhost, single-label hostname)
+    if !host.contains('.') {
+        return true;
+    }
+    
+    // IP addresses are main domains
+    if host.parse::<std::net::IpAddr>().is_ok() {
+        return true;
+    }
+    
+    // Count the number of parts (dots + 1)
+    // Two parts (e.g., "rwth.cool", "example.com") = main domain
+    // Three+ parts (e.g., "moodle.rwth.cool") = has subdomain
+    let parts = host.split('.').count();
+    parts <= 2
+}
+
+/// Extract subdomain from host (first part before the first dot)
+/// Only returns a subdomain if the host has 3+ parts (subdomain.domain.tld)
+fn extract_subdomain(host: &str) -> Option<&str> {
+    // Don't treat IP address octets as subdomains
+    if host.parse::<std::net::Ipv4Addr>().is_ok() {
+        return None;
+    }
+    
+    // Need at least 3 parts for a subdomain (subdomain.domain.tld)
+    let parts: Vec<&str> = host.split('.').collect();
+    if parts.len() < 3 {
+        return None;
+    }
+    
+    // First part is the subdomain
+    Some(parts[0])
+}
 
 #[derive(Debug, Deserialize, Clone)]
 struct RedirectEntry {
@@ -207,7 +244,7 @@ async fn handle_redirect(
     tracing::debug!("Processing request for host: {}", host);
 
     // First try subdomain redirect
-    if let Some(subdomain) = host.strip_suffix(&format!(".{DOMAIN}")) {
+    if let Some(subdomain) = extract_subdomain(host) {
         tracing::debug!("Found subdomain: {}", subdomain);
 
         // Check direct redirects first
@@ -247,7 +284,7 @@ async fn handle_redirect(
     }
 
     // If no redirect found and we're on the main domain, show the list
-    if host == DOMAIN && {
+    if is_main_domain(host) && {
         if let Some(Path(path)) = path {
             path.is_empty()
         } else {
