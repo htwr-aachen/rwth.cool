@@ -21,12 +21,12 @@ fn is_main_domain(host: &str) -> bool {
     if !host.contains('.') {
         return true;
     }
-    
+
     // IP addresses are main domains
     if host.parse::<std::net::IpAddr>().is_ok() {
         return true;
     }
-    
+
     // Count the number of parts (dots + 1)
     // Two parts (e.g., "rwth.cool", "example.com") = main domain
     // Three+ parts (e.g., "moodle.rwth.cool") = has subdomain
@@ -41,13 +41,13 @@ fn extract_subdomain(host: &str) -> Option<&str> {
     if host.parse::<std::net::Ipv4Addr>().is_ok() {
         return None;
     }
-    
+
     // Need at least 3 parts for a subdomain (subdomain.domain.tld)
     let parts: Vec<&str> = host.split('.').collect();
     if parts.len() < 3 {
         return None;
     }
-    
+
     // First part is the subdomain
     Some(parts[0])
 }
@@ -179,7 +179,12 @@ async fn favicon() -> impl IntoResponse {
 // Robots.txt handler
 async fn robots_txt() -> impl IntoResponse {
     match std::fs::read_to_string("static/robots.txt") {
-        Ok(content) => (StatusCode::OK, [(CONTENT_TYPE, "text/plain; charset=utf-8")], content).into_response(),
+        Ok(content) => (
+            StatusCode::OK,
+            [(CONTENT_TYPE, "text/plain; charset=utf-8")],
+            content,
+        )
+            .into_response(),
         Err(_) => (
             StatusCode::NOT_FOUND,
             [(CONTENT_TYPE, "text/plain")],
@@ -198,8 +203,13 @@ async fn sitemap_xml() -> impl IntoResponse {
   </url>
 </urlset>
 "#;
-    
-    (StatusCode::OK, [(CONTENT_TYPE, "application/xml; charset=utf-8")], xml).into_response()
+
+    (
+        StatusCode::OK,
+        [(CONTENT_TYPE, "application/xml; charset=utf-8")],
+        xml,
+    )
+        .into_response()
 }
 
 // Type aliases to simplify complex types
