@@ -1,0 +1,296 @@
+{% extends "base.html" %} {% block content %}
+<label class="theme-switch" aria-label="Toggle dark mode">
+  <input type="checkbox" id="theme-toggle">
+  <span class="slider">
+    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+  </span>
+</label>
+<div class="container error-container">
+  <div class="error-content">
+    <div class="error-emoji">🤔</div>
+    <h1 class="error-title">4😵4</h1>
+    <h2 class="error-subtitle">This redirect doesn't exist... yet!</h2>
+
+    <p class="error-description">
+      The shortcut <strong>{{ subdomain }}.rwth.cool</strong> hasn't been configured yet.
+    </p>
+
+    <div class="error-suggestions" id="suggestions-container">
+      <p>Maybe you meant one of these?</p>
+      <div class="suggestion-grid" id="suggestion-grid">
+        <!-- Suggestions will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <div class="error-actions">
+      <a href="https://rwth.cool" class="btn btn-primary">
+        🏠 Go to Homepage
+      </a>
+      <a href="https://github.com/htwr-aachen/rwth.cool/issues/new" class="btn btn-secondary" target="_blank">
+        ➕ Request this shortcut
+      </a>
+    </div>
+
+    <div class="error-fun-fact">
+      <p>💡 <strong>Fun fact:</strong> You could be the one to add this redirect! PRs are welcome 😎</p>
+    </div>
+  </div>
+</div>
+
+<!-- Redirect data for fuzzy matching -->
+<script id="redirects-data" type="application/json">
+{
+  {% for (key, entry) in redirects %}
+  "{{ key }}": {
+    "url": "{{ entry.url }}",
+    "description": "{{ entry.description }}",
+    "aliases": [{% for alias in entry.aliases %}"{{ alias }}"{% if !loop.last %}, {% endif %}{% endfor %}]
+  }{% if !loop.last %},{% endif %}
+  {% endfor %}
+}
+</script>
+
+<style>
+  .error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 4rem);
+    text-align: center;
+  }
+
+  .error-content {
+    max-width: 600px;
+    padding: 2rem;
+  }
+
+  .error-emoji {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .error-title {
+    font-size: 5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  .error-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-weight: 400;
+  }
+
+  .error-description {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin: 1.5rem 0;
+  }
+
+  .error-description strong {
+    color: var(--primary-color);
+    font-family: monospace;
+    background: var(--card-background);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .error-suggestions {
+    margin: 2rem 0;
+  }
+
+  .error-suggestions > p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .suggestion-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .suggestion-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--card-background);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .suggestion-card:hover {
+    transform: translateY(-3px);
+    background-color: var(--card-hover);
+  }
+
+  .suggestion-card .suggestion-key {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+  }
+
+  .suggestion-card .suggestion-key mark {
+    background-color: var(--highlight-color);
+    color: var(--text-color);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .suggestion-card .suggestion-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-primary {
+    background: var(--primary-color);
+    color: white;
+  }
+
+  .btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+  }
+
+  .error-fun-fact {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--card-background) 0%, var(--card-hover) 100%);
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary-color);
+  }
+
+  .error-fun-fact p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .error-fun-fact strong {
+    color: var(--text-color);
+  }
+
+  .error-title:hover {
+    animation: shake 0.5s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px) rotate(-5deg); }
+    75% { transform: translateX(5px) rotate(5deg); }
+  }
+
+  .no-suggestions {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+</style>
+
+<script src="/search.js"></script>
+<script>
+  // Theme toggle functionality
+  const themeToggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+  
+  // Set initial state based on current theme
+  if (html.getAttribute('data-theme') === 'dark') {
+    themeToggle.checked = true;
+  }
+  
+  themeToggle.addEventListener('change', function() {
+    if (this.checked) {
+      html.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      html.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+
+  // Fuzzy matching and suggestions
+  const searchTerm = "{{ subdomain }}";
+  const redirectsData = JSON.parse(document.getElementById('redirects-data').textContent);
+
+  // Find and display suggestions
+  function displaySuggestions() {
+    const grid = document.getElementById('suggestion-grid');
+    const container = document.getElementById('suggestions-container');
+    const matches = [];
+
+    for (const [key, entry] of Object.entries(redirectsData)) {
+      const matchResult = calculateScoreWithFallback(key, entry.description, entry.aliases, searchTerm);
+      if (matchResult) {
+        matches.push({
+          key,
+          entry,
+          ...matchResult
+        });
+      }
+    }
+
+    // Sort by score and take top 6
+    matches.sort((a, b) => a.score - b.score);
+    const topMatches = matches.slice(0, 6);
+
+    if (topMatches.length === 0) {
+      container.innerHTML = '<p class="no-suggestions">No similar redirects found. Be the first to add one!</p>';
+      return;
+    }
+
+    grid.innerHTML = topMatches.map(match => {
+      const displayKey = match.type === "key" && match.indices 
+        ? highlightMatches(match.key, match.indices)
+        : match.key;
+      
+      return `
+        <a href="https://${match.key}.rwth.cool" class="suggestion-card">
+          <span class="suggestion-key">${displayKey}.rwth.cool</span>
+          <span class="suggestion-desc">${match.entry.description}</span>
+        </a>
+      `;
+    }).join('');
+  }
+
+  displaySuggestions();
+</script>
+{% endblock %}

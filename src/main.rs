@@ -87,6 +87,13 @@ struct IndexTemplate<'a> {
     categories: Vec<CategoryGroup<'a>>,
 }
 
+#[derive(Template)]
+#[template(path = "404.html")]
+struct NotFoundTemplate<'a> {
+    subdomain: String,
+    redirects: &'a HashMap<String, RedirectEntry>,
+}
+
 impl<'a> IndexTemplate<'a> {
     fn new(redirects: &'a HashMap<String, RedirectEntry>) -> Self {
         use std::collections::BTreeMap;
@@ -124,13 +131,13 @@ impl<'a> IndexTemplate<'a> {
 }
 
 // Custom response type to handle both redirects and template rendering
-enum AppResponse {
+enum AppResponse<'a> {
     Redirect(Redirect),
     Template(IndexTemplate<'static>),
-    NotFound(String),
+    NotFound(NotFoundTemplate<'a>),
 }
 
-impl IntoResponse for AppResponse {
+impl IntoResponse for AppResponse<'_> {
     fn into_response(self) -> axum::response::Response {
         match self {
             AppResponse::Redirect(redirect) => redirect.into_response(),
@@ -148,12 +155,20 @@ impl IntoResponse for AppResponse {
                 )
                     .into_response(),
             },
-            AppResponse::NotFound(msg) => (
-                StatusCode::NOT_FOUND,
-                [(CONTENT_TYPE, "text/plain; charset=utf-8")],
-                msg,
-            )
-                .into_response(),
+            AppResponse::NotFound(template) => match template.render() {
+                Ok(html) => (
+                    StatusCode::NOT_FOUND,
+                    [(CONTENT_TYPE, "text/html; charset=utf-8")],
+                    html,
+                )
+                    .into_response(),
+                Err(err) => (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    [(CONTENT_TYPE, "text/plain; charset=utf-8")],
+                    format!("Template error: {err}"),
+                )
+                    .into_response(),
+            },
         }
     }
 }
@@ -189,6 +204,24 @@ async fn robots_txt() -> impl IntoResponse {
             StatusCode::NOT_FOUND,
             [(CONTENT_TYPE, "text/plain")],
             "robots.txt not found".to_string(),
+        )
+            .into_response(),
+    }
+}
+
+// Search.js handler
+async fn search_js() -> impl IntoResponse {
+    match std::fs::read_to_string("static/search.js") {
+        Ok(content) => (
+            StatusCode::OK,
+            [(CONTENT_TYPE, "application/javascript; charset=utf-8")],
+            content,
+        )
+            .into_response(),
+        Err(_) => (
+            StatusCode::NOT_FOUND,
+            [(CONTENT_TYPE, "text/plain")],
+            "search.js not found".to_string(),
         )
             .into_response(),
     }
@@ -252,6 +285,7 @@ async fn main() {
     let app = Router::new()
         .route("/favicon.png", get(favicon))
         .route("/robots.txt", get(robots_txt))
+        .route("/search.js", get(search_js))
         .route("/sitemap.xml", get(sitemap_xml))
         .route("/", get(handle_redirect))
         .route("/{*path}", get(handle_redirect))
@@ -323,14 +357,30 @@ async fn handle_redirect(
 
     // If no redirect found and we're on the main domain, show the list
     if is_main_domain(host) && {
-        if let Some(Path(path)) = path {
-            path.is_empty()
+        if let Some(Path(ref p)) = path {
+            p.is_empty()
         } else {
             true
         }
     } {
         AppResponse::Template(IndexTemplate::new(REDIRECTS_MAP.get().unwrap()))
     } else {
-        AppResponse::NotFound("# Redirect not found".to_string())
+        // Extract the subdomain or path for the 404 page
+        let subdomain = extract_subdomain(host)
+            .map(|s| s.to_string())
+            .or_else(|| {
+                path.as_ref().and_then(|Path(p)| {
+                    p.trim_start_matches('/')
+                        .split('/')
+                        .next()
+                        .map(|s| s.to_string())
+                })
+            })
+            .unwrap_or_else(|| "unknown".to_string());
+
+        AppResponse::NotFound(NotFoundTemplate {
+            subdomain,
+            redirects: REDIRECTS_MAP.get().unwrap(),
+        })
     }
 }
