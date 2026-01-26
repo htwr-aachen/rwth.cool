@@ -2,6 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Apply theme immediately to prevent flash of unstyled content
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Quick access to RWTH Aachen University resources. Fast shortcut links for students, faculty, and staff." />
     <meta name="keywords" content="RWTH, Aachen, University, shortcuts, quick links, resources, students" />
@@ -28,6 +38,22 @@
         --background-color: #ffffff;
         --card-background: #f8f9fa;
         --text-color: #333333;
+        --text-muted: #666666;
+        --border-color: #ddd;
+        --card-hover: #f0f1f2;
+        --highlight-color: #ffeb3b;
+      }
+
+      [data-theme="dark"] {
+        --primary-color: #4da3ff;
+        --secondary-color: #7bc950;
+        --background-color: #1a1a2e;
+        --card-background: #16213e;
+        --text-color: #e8e8e8;
+        --text-muted: #a0a0a0;
+        --border-color: #3a3a5c;
+        --card-hover: #1f2b4a;
+        --highlight-color: #ffd700;
       }
 
       * {
@@ -64,7 +90,7 @@
       }
 
       .subtitle {
-        color: #666;
+        color: var(--text-muted);
         font-size: 1.1rem;
       }
 
@@ -78,10 +104,16 @@
         width: 100%;
         padding: 0.75rem 1rem;
         font-size: 1rem;
-        border: 2px solid #ddd;
+        border: 2px solid var(--border-color);
         border-radius: 8px;
-        transition: border-color 0.2s ease;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
         font-family: inherit;
+        background-color: var(--card-background);
+        color: var(--text-color);
+      }
+
+      #search-input::placeholder {
+        color: var(--text-muted);
       }
 
       #search-input:focus {
@@ -92,8 +124,47 @@
       #search-results-count {
         margin-top: 0.5rem;
         text-align: center;
-        color: #666;
+        color: var(--text-muted);
         font-size: 0.9rem;
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: var(--card-background);
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+        z-index: 1000;
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.1);
+        background: var(--card-hover);
+      }
+
+      .theme-toggle .sun-icon {
+        display: none;
+      }
+
+      .theme-toggle .moon-icon {
+        display: block;
+      }
+
+      [data-theme="dark"] .theme-toggle .sun-icon {
+        display: block;
+      }
+
+      [data-theme="dark"] .theme-toggle .moon-icon {
+        display: none;
       }
 
       .category-section {
@@ -128,13 +199,15 @@
       }
 
       .redirect-card mark {
-        background-color: #ffeb3b;
-        color: inherit;
+        background-color: var(--highlight-color);
+        color: var(--text-color);
+        padding: 0 2px;
+        border-radius: 2px;
       }
 
       .redirect-card:hover {
         transform: translateY(-2px);
-        background-color: #f0f1f2;
+        background-color: var(--card-hover);
       }
 
       .redirect-card h2 {
@@ -163,13 +236,13 @@
       }
 
       .redirect-description {
-        color: #666;
+        color: var(--text-muted);
         font-size: 0.85rem;
         margin-top: 0.5rem;
       }
 
       .redirect-aliases {
-        color: #666;
+        color: var(--text-muted);
         font-size: 0.8rem;
         margin-top: 0.5rem;
       }
@@ -177,7 +250,7 @@
       footer {
         margin-top: 4rem;
         text-align: center;
-        color: #666;
+        color: var(--text-muted);
         font-size: 0.9rem;
       }
 

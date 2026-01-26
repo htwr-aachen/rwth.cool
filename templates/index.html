@@ -1,4 +1,8 @@
 {% extends "base.html" %} {% block content %}
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+  <span class="sun-icon">☀️</span>
+  <span class="moon-icon">🌙</span>
+</button>
 <div class="container">
   <header>
     <h1>RWTH.cool😎</h1>
@@ -214,6 +218,46 @@
     if (e.key === "/" && document.activeElement.tagName !== "INPUT") {
       e.preventDefault();
       document.getElementById("search-input").focus();
+    }
+  });
+
+  // Dark mode toggle
+  const themeToggle = document.getElementById("theme-toggle");
+  const html = document.documentElement;
+
+  // Check for saved theme preference or default to system preference
+  function getPreferredTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      return savedTheme;
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  // Apply theme
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      html.setAttribute("data-theme", "dark");
+    } else {
+      html.removeAttribute("data-theme");
+    }
+  }
+
+  // Initialize theme
+  applyTheme(getPreferredTheme());
+
+  // Toggle theme on button click
+  themeToggle.addEventListener("click", function () {
+    const currentTheme = html.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    applyTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+  });
+
+  // Listen for system theme changes
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function (e) {
+    if (!localStorage.getItem("theme")) {
+      applyTheme(e.matches ? "dark" : "light");
     }
   });
 </script>
