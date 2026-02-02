@@ -308,3 +308,8 @@ category = "Institutes"
 url = "https://www.informatik.rwth-aachen.de/cms/~mxz/informatik/"
 description = "RWTH Department of Computer Science"
 category = "Institutes"
+
+[redirects.kartenservice]
+url = "https://kartenservice.stw.rwth-aachen.de/KartenService"
+description = "STW Kartenservice to manage mensa autoload"
+aliases = ["autoload"]
