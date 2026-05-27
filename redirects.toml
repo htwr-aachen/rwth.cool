@@ -229,7 +229,7 @@ description = "BaFög beantragen und Infos"
 category = "Academic"
 aliases = ["money"]
 
-[redirects.carrer]
+[redirects.career]
 url = "https://www.rwth-aachen.de/cms/root/studium/nach-dem-studium/~ejx/karriere/"
 description = "Counseling and Workshops around your future career by RWTH"
 category = "Counseling & Support"
