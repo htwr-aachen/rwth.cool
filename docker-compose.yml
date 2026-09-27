@@ -1,7 +1,14 @@
----
 services:
   rwth-cool:
     image: ghcr.io/htwr-aachen/rwth.cool:main
     restart: always
     ports:
       - 3000:3000
+    environment:
+      BASE_URL: ${BASE_URL:-https://rwth.cool}
+    healthcheck:
+      test: ["CMD", "/rwth.cool/rwth_cool", "--healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
