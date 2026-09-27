@@ -6,7 +6,10 @@
     <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
   </span>
 </label>
-<div class="container error-container">
+<div class="container error-container" id="error-page"
+     data-subdomain="{{ subdomain }}"
+     data-base-url="{{ base_url }}"
+     data-base-domain="{{ base_domain }}">
   <div class="error-content">
     <div class="error-emoji">🤔</div>
     <h1 class="error-title">4😵4</h1>
@@ -24,7 +27,7 @@
     </div>
 
     <div class="error-actions">
-      <a href="https://rwth.cool" class="btn btn-primary">
+      <a href="{{ base_url }}" class="btn btn-primary">
         🏠 Go to Homepage
       </a>
       <a href="https://github.com/htwr-aachen/rwth.cool/issues/new" class="btn btn-secondary" target="_blank">
@@ -38,18 +41,8 @@
   </div>
 </div>
 
-<!-- Redirect data for fuzzy matching -->
-<script id="redirects-data" type="application/json">
-{
-  {% for (key, entry) in redirects %}
-  "{{ key }}": {
-    "url": "{{ entry.url }}",
-    "description": "{{ entry.description }}",
-    "aliases": [{% for alias in entry.aliases %}"{{ alias }}"{% if !loop.last %}, {% endif %}{% endfor %}]
-  }{% if !loop.last %},{% endif %}
-  {% endfor %}
-}
-</script>
+<!-- Redirect data for fuzzy matching, serialized in Rust and safe to embed -->
+<script id="redirects-data" type="application/json">{{ redirects_json | safe }}</script>
 
 <style>
   .error-container {
@@ -248,7 +241,10 @@
   });
 
   // Fuzzy matching and suggestions
-  const searchTerm = "{{ subdomain }}";
+  const pageData = document.getElementById('error-page').dataset;
+  const searchTerm = pageData.subdomain || '';
+  const baseUrl = pageData.baseUrl;
+  const baseDomain = pageData.baseDomain;
   const redirectsData = JSON.parse(document.getElementById('redirects-data').textContent);
 
   // Find and display suggestions
@@ -278,14 +274,15 @@
     }
 
     grid.innerHTML = topMatches.map(match => {
-      const displayKey = match.type === "key" && match.indices 
+      const displayKey = match.type === "key" && match.indices
         ? highlightMatches(match.key, match.indices)
-        : match.key;
-      
+        : escapeHtml(match.key);
+      const suggestionUrl = baseUrl.replace("://", "://" + encodeURIComponent(match.key) + ".");
+
       return `
-        <a href="https://${match.key}.rwth.cool" class="suggestion-card">
-          <span class="suggestion-key">${displayKey}.rwth.cool</span>
-          <span class="suggestion-desc">${match.entry.description}</span>
+        <a href="${suggestionUrl}" class="suggestion-card">
+          <span class="suggestion-key">${displayKey}.${baseDomain}</span>
+          <span class="suggestion-desc">${escapeHtml(match.entry.description)}</span>
         </a>
       `;
     }).join('');

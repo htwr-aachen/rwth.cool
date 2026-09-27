@@ -1,258 +1,20 @@
-use askama::Template;
-use axum::{
-    extract::{Path, State},
-    http::{header::CONTENT_TYPE, HeaderMap, StatusCode},
-    response::{IntoResponse, Redirect},
-    routing::get,
-    Router,
-};
-use once_cell::sync::OnceCell;
-use serde::Deserialize;
-use std::{collections::HashMap, net::SocketAddr, sync::Arc};
-use tower_http::trace::TraceLayer;
+use rwth_cool::{app, build_state};
+use std::{net::SocketAddr, sync::Arc, time::Duration};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-static REDIRECTS_MAP: OnceCell<HashMap<String, RedirectEntry>> = OnceCell::new();
-
-/// Check if a host is considered a "main domain" host (where we show the index page)
-/// Returns true for hosts without subdomains (localhost, IPs, or two-part domains like example.com)
-fn is_main_domain(host: &str) -> bool {
-    // No dots means no subdomain (localhost, single-label hostname)
-    if !host.contains('.') {
-        return true;
-    }
-
-    // IP addresses are main domains
-    if host.parse::<std::net::IpAddr>().is_ok() {
-        return true;
-    }
-
-    // Count the number of parts (dots + 1)
-    // Two parts (e.g., "rwth.cool", "example.com") = main domain
-    // Three+ parts (e.g., "moodle.rwth.cool") = has subdomain
-    let parts = host.split('.').count();
-    parts <= 2
-}
-
-/// Extract subdomain from host (first part before the first dot)
-/// Only returns a subdomain if the host has 3+ parts (subdomain.domain.tld)
-fn extract_subdomain(host: &str) -> Option<&str> {
-    // Don't treat IP address octets as subdomains
-    if host.parse::<std::net::Ipv4Addr>().is_ok() {
-        return None;
-    }
-
-    // Need at least 3 parts for a subdomain (subdomain.domain.tld)
-    let parts: Vec<&str> = host.split('.').collect();
-    if parts.len() < 3 {
-        return None;
-    }
-
-    // First part is the subdomain
-    Some(parts[0])
-}
-
-#[derive(Debug, Deserialize, Clone)]
-struct RedirectEntry {
-    url: String,
-    description: String,
-    #[serde(default)]
-    aliases: Vec<String>,
-    #[serde(default)]
-    category: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
-struct Config {
-    redirects: HashMap<String, RedirectEntry>,
-}
-
-// New type to hold a sorted redirect entry
-#[derive(Debug)]
-struct SortedRedirect<'a> {
-    key: &'a str,
-    entry: &'a RedirectEntry,
-}
-
-// Category group for organizing redirects
-#[derive(Debug)]
-struct CategoryGroup<'a> {
-    category: String,
-    redirects: Vec<SortedRedirect<'a>>,
-}
-
-#[derive(Template)]
-#[template(path = "index.html")]
-struct IndexTemplate<'a> {
-    categories: Vec<CategoryGroup<'a>>,
-}
-
-#[derive(Template)]
-#[template(path = "404.html")]
-struct NotFoundTemplate<'a> {
-    subdomain: String,
-    redirects: &'a HashMap<String, RedirectEntry>,
-}
-
-impl<'a> IndexTemplate<'a> {
-    fn new(redirects: &'a HashMap<String, RedirectEntry>) -> Self {
-        use std::collections::BTreeMap;
-
-        // Group redirects by category
-        let mut category_map: BTreeMap<String, Vec<SortedRedirect>> = BTreeMap::new();
-
-        for (key, entry) in redirects {
-            let category = entry
-                .category
-                .clone()
-                .unwrap_or_else(|| "Other".to_string());
-            category_map
-                .entry(category)
-                .or_default()
-                .push(SortedRedirect { key, entry });
-        }
-
-        // Sort redirects within each category and convert to CategoryGroup
-        let categories: Vec<CategoryGroup> = category_map
-            .into_iter()
-            .map(|(category, mut redirects)| {
-                redirects.sort_by(|a, b| a.key.cmp(b.key));
-                CategoryGroup {
-                    category,
-                    redirects,
-                }
-            })
-            .collect();
-
-        // Categories are already sorted by BTreeMap
-
-        Self { categories }
-    }
-}
-
-// Custom response type to handle both redirects and template rendering
-enum AppResponse<'a> {
-    Redirect(Redirect),
-    Template(IndexTemplate<'static>),
-    NotFound(NotFoundTemplate<'a>),
-}
-
-impl IntoResponse for AppResponse<'_> {
-    fn into_response(self) -> axum::response::Response {
-        match self {
-            AppResponse::Redirect(redirect) => redirect.into_response(),
-            AppResponse::Template(template) => match template.render() {
-                Ok(html) => (
-                    StatusCode::OK,
-                    [(CONTENT_TYPE, "text/html; charset=utf-8")],
-                    html,
-                )
-                    .into_response(),
-                Err(err) => (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    [(CONTENT_TYPE, "text/plain; charset=utf-8")],
-                    format!("Template error: {err}"),
-                )
-                    .into_response(),
-            },
-            AppResponse::NotFound(template) => match template.render() {
-                Ok(html) => (
-                    StatusCode::NOT_FOUND,
-                    [(CONTENT_TYPE, "text/html; charset=utf-8")],
-                    html,
-                )
-                    .into_response(),
-                Err(err) => (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    [(CONTENT_TYPE, "text/plain; charset=utf-8")],
-                    format!("Template error: {err}"),
-                )
-                    .into_response(),
-            },
-        }
-    }
-}
-
-// Helper function to strip port from host
-fn strip_port(host: &str) -> &str {
-    host.split(':').next().unwrap_or(host)
-}
-
-// Favicon handler
-async fn favicon() -> impl IntoResponse {
-    match std::fs::read("static/favicon.png") {
-        Ok(content) => (StatusCode::OK, [(CONTENT_TYPE, "image/x-icon")], content).into_response(),
-        Err(_) => (
-            StatusCode::NOT_FOUND,
-            [(CONTENT_TYPE, "text/plain")],
-            "Favicon not found".to_string(),
-        )
-            .into_response(),
-    }
-}
-
-// Robots.txt handler
-async fn robots_txt() -> impl IntoResponse {
-    match std::fs::read_to_string("static/robots.txt") {
-        Ok(content) => (
-            StatusCode::OK,
-            [(CONTENT_TYPE, "text/plain; charset=utf-8")],
-            content,
-        )
-            .into_response(),
-        Err(_) => (
-            StatusCode::NOT_FOUND,
-            [(CONTENT_TYPE, "text/plain")],
-            "robots.txt not found".to_string(),
-        )
-            .into_response(),
-    }
-}
-
-// Search.js handler
-async fn search_js() -> impl IntoResponse {
-    match std::fs::read_to_string("static/search.js") {
-        Ok(content) => (
-            StatusCode::OK,
-            [(CONTENT_TYPE, "application/javascript; charset=utf-8")],
-            content,
-        )
-            .into_response(),
-        Err(_) => (
-            StatusCode::NOT_FOUND,
-            [(CONTENT_TYPE, "text/plain")],
-            "search.js not found".to_string(),
-        )
-            .into_response(),
-    }
-}
-
-// Sitemap.xml handler
-async fn sitemap_xml() -> impl IntoResponse {
-    let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://rwth.cool</loc>
-  </url>
-</urlset>
-"#;
-
-    (
-        StatusCode::OK,
-        [(CONTENT_TYPE, "application/xml; charset=utf-8")],
-        xml,
-    )
-        .into_response()
-}
-
-// Type aliases to simplify complex types
-type RedirectMap = Arc<HashMap<String, RedirectEntry>>;
-type AliasMap = Arc<HashMap<String, String>>;
-type AppState = (RedirectMap, AliasMap);
+/// Base URL used for canonical links when `BASE_URL` is not set.
+const DEFAULT_BASE_URL: &str = "https://rwth.cool";
+/// Port used for serving and for the health check when `PORT` is not set.
+const DEFAULT_PORT: u16 = 3000;
 
 #[tokio::main]
 async fn main() {
-    // Initialize tracing
+    // `./rwth_cool --healthcheck` is used by the Docker health check: it does
+    // not start the server, but probes the running one and exits.
+    if std::env::args().nth(1).as_deref() == Some("--healthcheck") {
+        std::process::exit(healthcheck());
+    }
+
     tracing_subscriber::registry()
         .with(tracing_subscriber::EnvFilter::new(
             std::env::var("RUST_LOG").unwrap_or_else(|_| "info".into()),
@@ -260,127 +22,85 @@ async fn main() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    // Read and parse the redirects configuration
-    let config_content =
-        std::fs::read_to_string("redirects.toml").expect("Failed to read redirects.toml");
-    let config: Config = toml::from_str(&config_content).expect("Failed to parse redirects.toml");
+    let base_url = std::env::var("BASE_URL").unwrap_or_else(|_| DEFAULT_BASE_URL.to_string());
+    let config_path =
+        std::env::var("REDIRECTS_FILE").unwrap_or_else(|_| "redirects.toml".to_string());
+    let config = std::fs::read_to_string(&config_path)
+        .unwrap_or_else(|err| panic!("failed to read {config_path}: {err}"));
+    let state = build_state(&config, &base_url)
+        .unwrap_or_else(|err| panic!("invalid configuration in {config_path}: {err}"));
 
-    // Initialize the static redirects map
-    REDIRECTS_MAP
-        .set(config.redirects.clone())
-        .expect("Failed to initialize static redirects map");
+    let port = port();
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
+    let listener = tokio::net::TcpListener::bind(addr)
+        .await
+        .unwrap_or_else(|err| panic!("failed to bind {addr}: {err}"));
+    tracing::info!(%addr, %base_url, config = %config_path, "listening");
 
-    // Create a map of aliases to their primary keys
-    let mut aliases_map = HashMap::new();
-    for (key, entry) in REDIRECTS_MAP.get().unwrap() {
-        for alias in &entry.aliases {
-            aliases_map.insert(alias.clone(), key.clone());
-        }
-    }
-
-    let redirects = Arc::new(REDIRECTS_MAP.get().unwrap().clone());
-    let aliases_map = Arc::new(aliases_map);
-
-    // Create the router
-    let app = Router::new()
-        .route("/favicon.png", get(favicon))
-        .route("/robots.txt", get(robots_txt))
-        .route("/search.js", get(search_js))
-        .route("/sitemap.xml", get(sitemap_xml))
-        .route("/", get(handle_redirect))
-        .route("/{*path}", get(handle_redirect))
-        .layer(TraceLayer::new_for_http())
-        .with_state((redirects.clone(), aliases_map.clone()));
-
-    // Bind to all interfaces
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
-    tracing::info!("listening on {}", addr);
-
-    // Start the server
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app(Arc::new(state)))
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap();
 }
 
-// Combined handler for both root and path-based requests
-#[axum::debug_handler]
-async fn handle_redirect(
-    State((redirects, aliases_map)): State<AppState>,
-    path: Option<Path<String>>,
-    headers: HeaderMap,
-) -> impl IntoResponse {
-    let host = headers
-        .get("host")
-        .and_then(|h| h.to_str().ok())
-        .unwrap_or("");
-    let host = strip_port(host);
-    tracing::debug!("Processing request for host: {}", host);
+/// Returns the configured port.
+fn port() -> u16 {
+    std::env::var("PORT")
+        .ok()
+        .and_then(|port| port.parse().ok())
+        .unwrap_or(DEFAULT_PORT)
+}
 
-    // First try subdomain redirect
-    if let Some(subdomain) = extract_subdomain(host) {
-        tracing::debug!("Found subdomain: {}", subdomain);
+/// Resolves on SIGINT (Ctrl+C) or SIGTERM, so that in-flight requests can finish.
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        tokio::signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
 
-        // Check direct redirects first
-        if let Some(target) = redirects.get(subdomain) {
-            tracing::info!("Redirecting {} to {}", host, target.url);
-            return AppResponse::Redirect(Redirect::permanent(&target.url));
-        }
+    #[cfg(unix)]
+    let terminate = async {
+        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+            .expect("failed to install SIGTERM handler")
+            .recv()
+            .await;
+    };
 
-        // Then check aliases
-        if let Some(primary_key) = aliases_map.get(subdomain) {
-            if let Some(target) = redirects.get(primary_key) {
-                tracing::info!("Redirecting {} (alias) to {}", host, target.url);
-                return AppResponse::Redirect(Redirect::permanent(&target.url));
-            }
-        }
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
     }
+    tracing::info!("shutting down");
+}
 
-    // If no subdomain match, try path-based redirect
-    if let Some(Path(path)) = &path {
-        let path = path.trim_start_matches('/');
-        let redirect_key = path.split('/').next().unwrap_or("");
-        tracing::debug!("Checking path redirect for: {}", redirect_key);
+/// Probes the local `/healthz` endpoint and returns a process exit code.
+fn healthcheck() -> i32 {
+    use std::io::{Read, Write};
 
-        // Check direct redirects first
-        if let Some(target) = redirects.get(redirect_key) {
-            tracing::info!("Redirecting /{} to {}", redirect_key, target.url);
-            return AppResponse::Redirect(Redirect::permanent(&target.url));
+    let result = (|| -> std::io::Result<bool> {
+        let mut stream = std::net::TcpStream::connect(("127.0.0.1", port()))?;
+        stream.set_read_timeout(Some(Duration::from_secs(5)))?;
+        stream
+            .write_all(b"GET /healthz HTTP/1.0\r\nHost: localhost\r\nConnection: close\r\n\r\n")?;
+
+        let mut response = String::new();
+        stream.read_to_string(&mut response)?;
+        Ok(response.starts_with("HTTP/1.0 200") || response.starts_with("HTTP/1.1 200"))
+    })();
+
+    match result {
+        Ok(true) => 0,
+        Ok(false) => {
+            eprintln!("health check failed: unexpected response");
+            1
         }
-
-        // Then check aliases
-        if let Some(primary_key) = aliases_map.get(redirect_key) {
-            if let Some(target) = redirects.get(primary_key) {
-                tracing::info!("Redirecting /{} (alias) to {}", redirect_key, target.url);
-                return AppResponse::Redirect(Redirect::permanent(&target.url));
-            }
+        Err(err) => {
+            eprintln!("health check failed: {err}");
+            1
         }
-    }
-
-    // If no redirect found and we're on the main domain, show the list
-    if is_main_domain(host) && {
-        if let Some(Path(ref p)) = path {
-            p.is_empty()
-        } else {
-            true
-        }
-    } {
-        AppResponse::Template(IndexTemplate::new(REDIRECTS_MAP.get().unwrap()))
-    } else {
-        // Extract the subdomain or path for the 404 page
-        let subdomain = extract_subdomain(host)
-            .map(|s| s.to_string())
-            .or_else(|| {
-                path.as_ref().and_then(|Path(p)| {
-                    p.trim_start_matches('/')
-                        .split('/')
-                        .next()
-                        .map(|s| s.to_string())
-                })
-            })
-            .unwrap_or_else(|| "unknown".to_string());
-
-        AppResponse::NotFound(NotFoundTemplate {
-            subdomain,
-            redirects: REDIRECTS_MAP.get().unwrap(),
-        })
     }
 }

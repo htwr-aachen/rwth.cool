@@ -25,7 +25,7 @@
     <div id="search-results-count"></div>
   </div>
 
-  <main id="main-content">
+  <main id="main-content" data-base-domain="{{ base_domain }}">
     <!-- Search results will be inserted here when searching -->
     <div id="search-results" style="display: none">
       <div class="redirects-grid" id="search-results-grid"></div>
@@ -50,7 +50,7 @@
             data-url="{{ redirect.entry.url }}"
             data-category="{{ category_group.category }}"
           >
-          <h3 class="card-title">{{ redirect.key }}.rwth.cool</h3>
+          <h3 class="card-title">{{ redirect.key }}.{{ base_domain }}</h3>
           <div class="redirect-description">
             {{ redirect.entry.description }}
           </div>
@@ -85,6 +85,7 @@
     const categorizedView = document.getElementById("categorized-view");
     const searchResults = document.getElementById("search-results");
     const searchResultsGrid = document.getElementById("search-results-grid");
+    const baseDomain = document.getElementById("main-content").dataset.baseDomain;
 
     if (searchTerm === "") {
       // Show categorized view, hide search results
@@ -139,9 +140,10 @@
       newCard.className = "redirect-card";
 
       // Create highlighted content
-      let titleHTML = match.key;
-      let descHTML = match.description;
-      let aliasHTML = match.aliases;
+      // Values are escaped before being inserted with innerHTML.
+      let titleHTML = escapeHtml(match.key);
+      let descHTML = escapeHtml(match.description);
+      let aliasHTML = escapeHtml(match.aliases);
 
       if (match.type === "key") {
         titleHTML = highlightMatches(match.key, match.indices);
@@ -152,7 +154,7 @@
       }
 
       newCard.innerHTML = `
-        <h3 class="card-title">${titleHTML}.rwth.cool</h3>
+        <h3 class="card-title">${titleHTML}.${baseDomain}</h3>
         <div class="redirect-description">${descHTML}</div>
         ${match.aliases ? `<div class="redirect-aliases">aliases: ${aliasHTML}</div>` : ""}
       `;

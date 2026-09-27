@@ -16,17 +16,28 @@ function fuzzyMatchWithIndices(text, search) {
   return searchIndex === search.length ? indices : null;
 }
 
+// Escape HTML special characters so untrusted values can be inserted with innerHTML
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, (char) => {
+    switch (char) {
+      case "&": return "&amp;";
+      case "<": return "&lt;";
+      case ">": return "&gt;";
+      case '"': return "&quot;";
+      default: return "&#39;";
+    }
+  });
+}
+
 // Highlight matched characters in text
 function highlightMatches(text, indices) {
-  if (!indices || indices.length === 0) return text;
+  if (!indices || indices.length === 0) return escapeHtml(text);
 
+  const highlighted = new Set(indices);
   let result = "";
   for (let i = 0; i < text.length; i++) {
-    if (indices.includes(i)) {
-      result += `<mark>${text[i]}</mark>`;
-    } else {
-      result += text[i];
-    }
+    const char = escapeHtml(text[i]);
+    result += highlighted.has(i) ? `<mark>${char}</mark>` : char;
   }
   return result;
 }
