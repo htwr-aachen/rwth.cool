@@ -138,7 +138,7 @@ category = "IT & Infrastructure"
 url = "https://paperless.rwth-aachen.de/application/exmatrikulation"
 description = "Aufgeben ist die letzte Option!"
 category = "Academic"
-alias = ["getmeoutofrwth", "aufgeben"]
+aliases = ["getmeoutofrwth", "aufgeben"]
 
 [redirects.fsphil]
 url = "https://www.fsphil.rwth-aachen.de"
