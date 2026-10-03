@@ -77,9 +77,17 @@ Templates and static assets are embedded into the binary; only `redirects.toml`
 is read at runtime. The container runs as an unprivileged user and includes a
 `--healthcheck` mode used by Docker's health check.
 
+The published image is a multi-architecture manifest for `linux/amd64` and
+`linux/arm64`; `TARGETARCH` selects the matching Rust musl target inside the
+build, so the same Dockerfile works on both.
+
 ```sh
+# Build for the host architecture
 docker build -t rwth.cool .
 docker run --rm -p 3000:3000 rwth.cool
+
+# Build and push a multi-architecture manifest
+docker buildx build --platform linux/amd64,linux/arm64 -t rwth.cool --push .
 ```
 
 ## License
