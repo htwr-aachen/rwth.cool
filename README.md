@@ -78,8 +78,9 @@ is read at runtime. The container runs as an unprivileged user and includes a
 `--healthcheck` mode used by Docker's health check.
 
 The published image is a multi-architecture manifest for `linux/amd64` and
-`linux/arm64`; `TARGETARCH` selects the matching Rust musl target inside the
-build, so the same Dockerfile works on both.
+`linux/arm64`. The build stage runs on the build platform and cross-compiles
+each target (using the toolchain's `rust-lld` for aarch64), so no QEMU
+emulation is required.
 
 ```sh
 # Build for the host architecture
